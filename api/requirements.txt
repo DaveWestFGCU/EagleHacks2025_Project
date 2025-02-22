@@ -1,0 +1,2 @@
+fastapi[standard] >= 0.115.6
+aiofiles >= 24.1.0
