@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 import llm_query
+from psycopg.errors import UniqueViolation
 import auth
 import db
 
@@ -51,6 +52,36 @@ def authenticate():
         return redirect(url_for('dashboard'))
 
     return render_template('login.html', error='Invalid credentials')
+
+
+@app.route('/register', methods=['POST'])
+def register():
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    if not username:
+        return render_template('login.html', error='Username cannot be empty')
+
+    if not password:
+        return render_template('login.html', error='Password cannot be empty')
+
+    salt = auth.generate_salt()
+    pw_hash = auth.hash_pw(pw=password, salt=salt)
+
+    try:
+        with db.connect() as conn, conn.cursor() as cursor:
+            cursor.execute(
+                """
+                insert into users (username, pw_hash, salt)
+                values (%s, %s, %s);
+                """,
+                (username, pw_hash, salt),
+            )
+    except UniqueViolation:
+        return render_template('login.html', error='Username taken')
+    else:
+        return render_template('login.html')
+
 
 @app.route('/logout')
 def logout():
