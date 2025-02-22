@@ -59,12 +59,13 @@ async def poll_job(job_id: str):
             content={'message': "Let me cook."}
         )
 
+    content = {'status': job.status,}
+    for i, ad_path in enumerate(job.image_locations):
+        content[f'{i}'] = ad_path
+
     return JSONResponse(
         status_code=status.HTTP_200_OK,
-        content={
-            'status': job.status,
-            'concept 0': job.concept0['url']
-        }
+        content=content
     )
 
 
