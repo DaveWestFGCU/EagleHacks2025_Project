@@ -1,6 +1,6 @@
 import uuid
 
-from fastapi import FastAPI, status, Form
+from fastapi import FastAPI, BackgroundTasks, status, Form
 from starlette.responses import JSONResponse
 from .ad_generator import AdGenerator
 
@@ -14,18 +14,18 @@ async def read_root():
     return {"Hello": "World"}
 
 @app.post("/new_job")
-async def new_job(keywords: str = Form(...)) -> JSONResponse:
-    """
-    Starts a new job.
-    :param keywords: Keyword(s) to build the ad around.
-    :return:
-    """
+async def new_job(background_tasks: BackgroundTasks,
+                  product: str = Form(...),
+                  audience: str = Form(...),
+                  goal: str = Form(...)) -> JSONResponse:
 
     job_id = str(uuid.uuid4())
     while job_id in job_store:
         job_id = str(uuid.uuid4())
 
-    job_store[job_id] = AdGenerator(job_id, keywords)
+    job_store[job_id] = AdGenerator(job_id, product, audience, goal)
+
+    background_tasks.add_task(job_store[job_id].run)
 
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,
