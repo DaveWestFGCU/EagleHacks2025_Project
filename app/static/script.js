@@ -1,20 +1,20 @@
 import Chart from 'chart.js/auto'
 import marketingData from './marketing_data.json'
 
+
 document.addEventListener("DOMContentLoaded", function() {
     try {
-        console.log("Received adData:", adData); // Debugging step
+        console.log("Received adData:", adData);
 
-        // Ensure adData is an object with an "ads" array
         if (!adData || !Array.isArray(adData)) {
             console.error("Invalid data format:", adData);
             return;
         }
 
         const adContainer = document.getElementById("ad-results");
-        adContainer.innerHTML = ""; // Clear previous results
+        adContainer.innerHTML = "";
 
-        adData.forEach(ad => {  // Directly iterate since adData is already an array
+        adData.forEach(ad => { 
             const adElement = document.createElement("div");
             adElement.classList.add("ad-box");
             adElement.innerHTML = `
@@ -30,17 +30,32 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-document.getElementById('toggle-font').addEventListener('click', function() {
-    document.body.classList.toggle('large-font');
+//accessibility buttons
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("DOM fully loaded");
+
+  // Fix: Ensure the buttons exist before attaching event listeners
+  const toggleFontButton = document.getElementById("toggle-font");
+  const toggleContrastButton = document.getElementById("toggle-contrast");
+
+  if (toggleFontButton) {
+      toggleFontButton.addEventListener("click", function () {
+          document.body.classList.toggle("large-font");
+      });
+  }
+
+  if (toggleContrastButton) {
+      toggleContrastButton.addEventListener("click", function () {
+          document.body.classList.toggle("high-contrast");
+      });
+  }
 });
 
-document.getElementById('toggle-contrast').addEventListener('click', function() {
-    document.body.classList.toggle('high-contrast');
-});
+
 
 
 document.getElementById('adForm').addEventListener('submit', async function(event) {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault();
 
     let formData = new FormData(this);
 
@@ -49,7 +64,7 @@ document.getElementById('adForm').addEventListener('submit', async function(even
         body: formData
     });
 
-    let result = await response.json(); // Parse JSON response
+    let result = await response.json(); 
 
     if (result.error) {
         document.getElementById('ad-results').innerHTML = `<p style="color: red;">${result.error}</p>`;
@@ -61,7 +76,7 @@ document.getElementById('adForm').addEventListener('submit', async function(even
 
 function displayAds(adData) {
     let container = document.getElementById('ad-results');
-    container.innerHTML = ''; // Clear previous results
+    container.innerHTML = ''; 
 
     let grid = document.createElement('div');
     grid.classList.add('ad-grid');
@@ -85,23 +100,20 @@ function displayAds(adData) {
 (async function() {
     const data = marketingData.data;
    
-     // Group data by date and channel
-     const channels = [...new Set(data.map(d => d.channel))]; // Get all unique channels
-     const dates = [...new Set(data.map(d => d.date))]; // Get all unique dates
+     const channels = [...new Set(data.map(d => d.channel))]; 
+     const dates = [...new Set(data.map(d => d.date))]; 
    
-     // Create datasets by channel
      const datasets = channels.map(channel => {
        return {
          label: channel,
          data: dates.map(date => {
            const entry = data.find(d => d.date === date && d.channel === channel);
-           return entry ? entry.impressions : 0; // Default to 0 if no data
+           return entry ? entry.impressions : 0; 
          }),
-         backgroundColor: getColorForChannel(channel), // Optional: Add custom colors for each channel
+         backgroundColor: getColorForChannel(channel), 
        };
      });
    
-     // Function to get a color based on the channel (can be customized)
      function getColorForChannel(channel) {
        const colors = {
          Facebook: 'rgba(59, 89, 152, 0.6)',
@@ -110,37 +122,35 @@ function displayAds(adData) {
          'Email Campaign': 'rgba(255, 165, 0, 0.6)',
          Twitter: 'rgba(29, 161, 242, 0.6)',
        };
-       return colors[channel] || 'rgba(0, 0, 0, 0.6)'; // Default color if not found
+       return colors[channel] || 'rgba(0, 0, 0, 0.6)'; 
      }
    
      new Chart(document.getElementById('graph1'), {
        type: 'bar',
        data: {
-         labels: dates, // X-axis labels (dates)
-         datasets: datasets // Your datasets for each channel
+         labels: dates,
+         datasets: datasets 
        },
        options: {
          responsive: true,
          scales: {
            x: {
-             // Label for x-axis (dates)
              title: {
                display: true,
-               text: 'Dates', // X-axis label
+               text: 'Dates',
                font: {
-                 size: 14, // Optional: adjust font size
-                 weight: 'bold' // Optional: adjust font weight
+                 size: 14, 
+                 weight: 'bold'
                }
              }
            },
            y: {
-             // Label for y-axis (impressions)
              title: {
                display: true,
-               text: 'Impressions', // Y-axis label
+               text: 'Impressions', 
                font: {
-                 size: 14, // Optional: adjust font size
-                 weight: 'bold' // Optional: adjust font weight
+                 size: 14,
+                 weight: 'bold' 
                }
              },
              beginAtZero: true
