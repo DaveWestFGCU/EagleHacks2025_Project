@@ -1,0 +1,1 @@
+prompt = "Given the keyword <keyword>, generate 3 ideas for images that can be used by an AI model to generate an image that will be used in an advertisement for this product."

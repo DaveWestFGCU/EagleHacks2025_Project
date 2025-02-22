@@ -5,7 +5,7 @@ from openai import OpenAI
 import json, re
 
 from .prompts.ad_concepts import prompt_text as ad_concept_prompt
-from .prompts.image import prompt_text as image_prompt
+from .prompts.image_generation import prompt_text as image_prompt
 
 class AdGenerator:
     def __init__(self, job_id, product, audience, goal):
@@ -73,8 +73,10 @@ class AdGenerator:
 
 
 
-    async def generate_image(self, concept_image):
-        prompt = image_prompt.replace('<details>', concept_image)
+    async def generate_image(self, image_concept):
+        print(image_concept
+              )
+        prompt = image_prompt.replace('<product>', image_concept['product']).replace('<audience>', image_concept['audience']).replace('<details>', image_concept['image']['details']).replace('<emotion>', image_concept['image']['emotion'])
         client = OpenAI(api_key=os.environ.get(')OPENAI_API_KEY'))
         response = client.images.generate(
             model="dall-e-3",
