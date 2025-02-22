@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Data Viewer</title>
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('ad_generation') }}">Ad Generation</a>
+            <a href="{{ url_for('market_data_viewer') }}">Ad Data</a>
+        </div>
+    
+        <div class="nav-right">
+            <div class="accessibility-menu">
+                <button id="toggle-font">Toggle Font Size</button>
+                <button id="toggle-contrast">High Contrast</button>
+            </div>
+            
+            {% if 'user' in session %}
+                <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="login-button">Login</a>
+            {% endif %}
+        </div>
+    </nav>
+    
+
+    <div class="content">
+        <h1>Marketing Data Viewer</h1>
+        <p>Data visualization will be available here soon.</p>
+    </div>
+
+    <script src="static/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ad Generation</title>
+    <link rel="stylesheet" href="static/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('ad_generation') }}">Ad Generation</a>
+            <a href="{{ url_for('market_data_viewer') }}">Ad Data</a>
+        </div>
+    
+        <div class="nav-right">
+            <div class="accessibility-menu">
+                <button id="toggle-font">Toggle Font Size</button>
+                <button id="toggle-contrast">High Contrast</button>
+            </div>
+            
+            {% if 'user' in session %}
+                <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="login-button">Login</a>
+            {% endif %}
+        </div>
+    </nav>
+    
+
+    <div class="container">
+        <h2>Enter Your Campaign Data</h2>
+        <form id="adForm">
+            <label for="field1">Product/Service Overview:</label>
+            <input type="text" id="field1" name="field1" placeholder="Describe your product or service"><br>
+        
+            <label for="field2">Target Audience:</label>
+            <input type="text" id="field2" name="field2" placeholder="Who is this campaign for?"><br>
+        
+            <label for="field3">Campaign Goal:</label>
+            <input type="text" id="field3" name="field3" placeholder="What is the goal of this campaign?"><br>
+        
+            <button type="submit">Submit</button>
+        </form>
+
+        <div class="results-container" id="ad-results"></div>
+        
+    </div>
+
+    <script src="static/script.js"></script>
+</body>
+</html>
