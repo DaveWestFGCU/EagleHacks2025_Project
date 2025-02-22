@@ -1,5 +1,5 @@
 prompt_text = '''
-            Generate 3 ad concepts based on the following criteria:
+            Generate 3 distinct ad concepts based on the following criteria:
 
             Product/Service Overview: <product>
             Target Audience: <audience>
