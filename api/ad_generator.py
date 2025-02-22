@@ -1,7 +1,7 @@
 
 import requests, asyncio, os, shutil
 import ollama
-from openai import OpenAI
+from openai import AsyncOpenAI
 import json, re
 from PIL import Image, ImageDraw, ImageFont
 
@@ -40,7 +40,7 @@ class AdGenerator:
         await self.generate_image(i, ad_concepts[i])
         await self.add_text_to_image(i, ad_concepts[i])
 
-        self.move_files_to_static(ad_concepts[i])
+        self.move_files_to_static(i)
         self.status = "done"
 
 
@@ -53,8 +53,8 @@ class AdGenerator:
 
         successful = False
         while not successful:
-            client = OpenAI(api_key=OPENAI_API_KEY)
-            completion = client.chat.completions.create(
+            client = AsyncOpenAI(api_key=OPENAI_API_KEY)
+            completion = await client.chat.completions.create(
                 model=self.text_model,
                 messages =[
                     {
@@ -85,8 +85,8 @@ class AdGenerator:
     async def generate_image(self, concept_num, image_concept):
         prompt = image_prompt.replace('<product>', self.product).replace('<audience>', self.audience).replace('<details>', image_concept['image']['details']).replace('<description>', image_concept['description']).replace('<emotion>', image_concept['image']['emotion'])
         print(prompt)
-        client = OpenAI(api_key=OPENAI_API_KEY)
-        response = client.images.generate(
+        client = AsyncOpenAI(api_key=OPENAI_API_KEY)
+        response = await client.images.generate(
             model=self.image_model,
             prompt=prompt,
             size="1024x1024",
@@ -110,8 +110,8 @@ class AdGenerator:
         print()
         print(prompt)
         print()
-        client = OpenAI(api_key=OPENAI_API_KEY)
-        completion = client.chat.completions.create(
+        client = AsyncOpenAI(api_key=OPENAI_API_KEY)
+        completion = await client.chat.completions.create(
             model=self.text_model,
             messages=[
                 {
@@ -163,7 +163,8 @@ class AdGenerator:
         img.save(f"./jobs/{self.id}/concept_{concept_num}.png")
         print("done")
 
-    def move_files_to_static(self, ad_concept):
-        os.makedirs('static', exist_ok=True)
-        shutil.move(f'jobs/{self.id}', f'static/{self.id}')
-        self.concept0['url'] = f'static/{self.id}/concept_0.png'
+
+    def move_files_to_static(self, concept_num):
+        os.makedirs(os.path.join('api','static'), exist_ok=True)
+        shutil.move(f'jobs/{self.id}', f'api/static/{self.id}')
+        self.concept0['url'] = os.path.join('static', self.id, f'concept_{concept_num}.png')
