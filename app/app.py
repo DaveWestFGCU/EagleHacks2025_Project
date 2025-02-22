@@ -96,7 +96,7 @@ def dashboard():
     return render_template('dashboard.html')
 
 # ----------------- AD GENERATION -----------------
-@app.route('/ad_generation', methods=['GET', 'POST'])
+@app.route('/new_job', methods=['GET', 'POST'])
 def ad_generation():
     if 'user' not in session:
         return redirect(url_for('login'))
@@ -120,6 +120,12 @@ def ad_generation():
     
     return render_template('ad_generation.html')
 
+
+@app.route('/check_status', methods=['GET'])
+def check_status():
+    task_id = request.args.get('task_id')
+    
+    return jsonify({'status': 'done'}), 200
 
 # ----------------- MARKET DATA VIEWER -----------------
 @app.route('/market_data_viewer')
