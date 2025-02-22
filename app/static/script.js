@@ -113,7 +113,7 @@ function displayAds(adData) {
        return colors[channel] || 'rgba(0, 0, 0, 0.6)'; // Default color if not found
      }
    
-     new Chart(document.getElementById('acquisitions'), {
+     new Chart(document.getElementById('graph1'), {
        type: 'bar',
        data: {
          labels: dates, // X-axis labels (dates)
