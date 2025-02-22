@@ -1,6 +1,5 @@
 fastapi[standard]
 ollama
 openai
-aiofiles
 Pillow
 requests
