@@ -3,7 +3,7 @@ import requests, asyncio, os
 import ollama
 from openai import OpenAI
 import json, re
-import pillow
+from PIL import Image, ImageDraw, ImageFont
 
 from .prompts.ad_concepts import prompt_text as ad_concept_prompt
 from .prompts.image_generation import prompt_text as image_prompt
@@ -88,6 +88,7 @@ class AdGenerator:
 
         print(response.data[0].url)
 
+        # Download image from OpenAI
         img_data = requests.get(response.data[0].url).content
         os.makedirs('jobs', exist_ok=True)
         os.makedirs(f'jobs/{self.id}', exist_ok=True)
@@ -97,4 +98,31 @@ class AdGenerator:
 
 
     async def add_text_to_image(self):
+        image = Image.open("./api/input_image.jpg")  # replace with your image file
+        # Alternatively, create a new image:
+        # image = Image.new("RGB", (400, 300), color="white")
 
+        # Create an ImageDraw object
+        draw = ImageDraw.Draw(image)
+
+        # Define the text and its properties
+        text = "Hello, World!"
+        position = (50, 50)  # (x, y) coordinates
+        fill_color = (255, 0, 0)  # red color in RGB
+
+        # Optionally, load a custom font
+        # Make sure the font file is accessible, and adjust the size as needed.
+        try:
+            font = ImageFont.truetype("arial".ttf", size=40)
+        except IOError:
+            # Fallback to default font if the specified font is not available
+            font = ImageFont.load_default(size=40)
+
+        # Add text to the image
+        draw.text(position, text, fill=fill_color, font=font)
+
+        # Save the edited image
+        image.save("output_image.jpg")
+
+        # Optionally, display the image (for example, in a GUI environment)
+        image.show()
