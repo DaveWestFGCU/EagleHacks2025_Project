@@ -15,9 +15,11 @@ document.addEventListener("DOMContentLoaded", function() {
         adContainer.innerHTML = "";
 
         adData.forEach(ad => { 
+            ad.image = "app/static/concept_0.png"
             const adElement = document.createElement("div");
             adElement.classList.add("ad-box");
             adElement.innerHTML = `
+                <img src=${ad.image} alt="${ad.title}" width="500" height="500">
                 <h3>${ad.title}</h3>
                 <p>${ad.description}</p>
                 <strong>${ad.key_message}</strong>
@@ -55,23 +57,44 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 document.getElementById('adForm').addEventListener('submit', async function(event) {
-    event.preventDefault();
+  event.preventDefault();
+  
+  let submitButton = this.querySelector('button');
+  submitButton.disabled = true;
+  submitButton.innerHTML = 'Processing... <span class="loader"></span>'; // Add a spinner
+  
+  let formData = new FormData(this);
+  
+  let response = await fetch('/new_job', {
+      method: 'POST',
+      body: formData
+  });
 
-    let formData = new FormData(this);
+  let result = await response.json(); 
 
-    let response = await fetch('/ad_generation', {
-        method: 'POST',
-        body: formData
-    });
-
-    let result = await response.json(); 
-
-    if (result.error) {
-        document.getElementById('ad-results').innerHTML = `<p style="color: red;">${result.error}</p>`;
-    } else {
-        displayAds(result.generated_ad);
-    }
+  if (result.error) {
+      document.getElementById('ad-results').innerHTML = `<p style="color: red;">${result.error}</p>`;
+      submitButton.disabled = false;
+      submitButton.innerHTML = 'Submit';
+  } else {
+      checkStatus(result.id, submitButton);
+  }
 });
+
+async function checkStatus(taskId, submitButton) {
+  const interval = setInterval(async () => {
+      let response = await fetch(`/job/${taskId}`);
+      let result = await response.json();
+
+      if (result.status === 'done') {
+          clearInterval(interval);
+          displayAds(result.generated_ad);
+          submitButton.disabled = false;
+          submitButton.innerHTML = 'Submit';
+      }
+  }, 3000);
+}
+
 
 
 function displayAds(adData) {
