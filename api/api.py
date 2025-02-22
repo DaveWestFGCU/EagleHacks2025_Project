@@ -13,13 +13,24 @@ job_store = {}
 
 @app.get("/")
 async def read_root():
-    return {"Hello": "World"}
+    """
+    Endpoint for checking API is working without starting a job.
+    """
+    return {"message": "Hello, World!"}
 
 @app.post("/new_job")
 async def new_job(background_tasks: BackgroundTasks,
                   product: str = Form(...),
                   audience: str = Form(...),
                   goal: str = Form(...)) -> JSONResponse:
+    """
+    Endpoint for creating a new job.
+    :param background_tasks: Function(s) to run after responding.
+    :param product:
+    :param audience:
+    :param goal:
+    :return:
+    """
 
     job_id = str(uuid.uuid4())
     while job_id in job_store:
@@ -27,7 +38,7 @@ async def new_job(background_tasks: BackgroundTasks,
 
     job_store[job_id] = AdGenerator(job_id, product, audience, goal)
 
-    background_tasks.add_task(job_store[job_id].run)
+    background_tasks.add_task(job_store[job_id].sim_run)
 
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,

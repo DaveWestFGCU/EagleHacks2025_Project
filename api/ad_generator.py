@@ -1,9 +1,11 @@
 
 import requests, asyncio, os, shutil, time
-import ollama
 from openai import AsyncOpenAI
-import json, re
+import json
 from PIL import Image, ImageDraw, ImageFont
+import logging
+
+from .logging_setup import queue_handler, listener
 
 from .prompts.ad_concepts import prompt_text as ad_concept_prompt
 from .prompts.ad_text import prompt_text as ad_text_prompt
@@ -20,7 +22,47 @@ class AdGenerator:
         self.status = 'new'
         self.text_model = 'gpt-4o-mini'
         self.image_model = 'dall-e-3'
+        # self.logger = self.create_logger(job_id)
+        # self.handler = self.create_handler(job_id)
         self.image_locations = []
+        os.makedirs(f'jobs/{self.id}', exist_ok=True)
+    #
+    # def create_logger(self) -> logging.Logger:
+    #     try:
+    #         job_logger = logging.getLogger(self.id)
+    #         job_logger.setLevel(logging.DEBUG)
+    #         job_logger.addHandler(queue_handler)
+    #
+    #     except Exception as e:
+    #         raise
+    #
+    #     return job_logger
+    #
+    # def create_handler(self, job_id, config=None) -> logging.Handler:
+    #     try:
+    #         job_log_root_dir = config.get('Logs', 'job_log_relative_path')
+    #         file_handler = logging.FileHandler(filename=os.path.join(job_log_root_dir, 'active', self.id + '.log'))
+    #         file_handler.setFormatter(logging.Formatter('%(asctime)s | %(levelname)s | %(message)s'))
+    #         file_handler.addFilter(logging.Filter(name=self.id))
+    #
+    #         # Add to listener's handlers
+    #         handlers = list(listener.handlers)
+    #         handlers.append(file_handler)
+    #         listener.handlers = tuple(handlers)
+    #
+    #     except Exception as e:
+    #         raise
+    #
+    #     return file_handler
+
+
+    async def sim_run(self):
+        self.status = 'processing'
+        await asyncio.sleep(16)
+        for i in range(3):
+            self.image_locations.append(f'static/sim/concept_{i}.png')
+        self.status = 'done'
+
 
 
     async def run(self):
@@ -35,12 +77,14 @@ class AdGenerator:
             else:
                 successful = True
 
+        # Generate ads in parallel
         task_list = [asyncio.create_task(self.generate_ad(i, concept)) for i, concept in enumerate(ad_concepts)]
         await asyncio.gather(*task_list)
-        self.move_files_to_static()
 
-        self.status = "done"
-        print(f'Job {self.id} completed in {time.time()-start_time} seconds.')
+        # Once ads are generated, move them to a directory for client access
+        self.move_files_to_static()
+        self.status = 'done'
+        print(f'Job {self.id} completed in {round(time.time()-start_time,2)} seconds.')
 
 
     async def generate_ad(self, i, concept):
@@ -103,8 +147,6 @@ class AdGenerator:
 
         # Download image from OpenAI
         img_data = requests.get(response.data[0].url).content
-        os.makedirs('jobs', exist_ok=True)
-        os.makedirs(f'jobs/{self.id}', exist_ok=True)
 
         with open(f'jobs/{self.id}/concept_{concept_num}.png', 'wb') as handler:  # TODO: Implement different file names for more than 1 image
             handler.write(img_data)
