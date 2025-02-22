@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 import llm_query
+import auth
+import db
 
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = 'your_secret_key'  # Needed for session management
@@ -11,15 +13,43 @@ def login():
         return redirect(url_for('dashboard'))
     return render_template('login.html')
 
+
 @app.route('/login', methods=['POST'])
 def authenticate():
     username = request.form.get('username')
     password = request.form.get('password')
-    
-    if username == 'admin' and password == 'password':  # Replace with real authentication logic
-        session['user'] = username
+
+    if not username:
+        return render_template('login.html', error='Username cannot be empty')
+
+    if not password:
+        return render_template('login.html', error='Password cannot be empty')
+
+    with db.connect() as conn, conn.cursor() as cursor:
+        record = cursor.execute(
+            """
+            select user_id, pw_hash, salt
+            from users
+            where username = %s;
+            """,
+            (username,),
+        ).fetchone()
+
+    if not record:
+        return render_template('login.html', error='Invalid credentials')
+
+    user_id = record.user_id
+    pw_hash = record.pw_hash
+    salt = record.salt
+
+    assert isinstance(user_id, int)
+    assert isinstance(pw_hash, bytes)
+    assert isinstance(salt, bytes)
+
+    if auth.pw_matches_hash(pw=password, salt=salt, hash=pw_hash):
+        session['user'] = user_id
         return redirect(url_for('dashboard'))
-    
+
     return render_template('login.html', error='Invalid credentials')
 
 @app.route('/logout')
