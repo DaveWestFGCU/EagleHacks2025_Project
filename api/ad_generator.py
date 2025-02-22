@@ -1,12 +1,15 @@
 
-import requests, asyncio, os
+import requests, asyncio, os, shutil
 import ollama
 from openai import OpenAI
 import json, re
 from PIL import Image, ImageDraw, ImageFont
 
 from .prompts.ad_concepts import prompt_text as ad_concept_prompt
+from .prompts.ad_text import prompt_text as ad_text_prompt
 from .prompts.image_generation import prompt_text as image_prompt
+
+from .api_key import OPENAI_API_KEY
 
 class AdGenerator:
     def __init__(self, job_id, product, audience, goal):
@@ -14,10 +17,14 @@ class AdGenerator:
         self.product = product
         self.audience = audience
         self.goal = goal
-        self.status = 'New'
+        self.status = 'new'
+        self.text_model = 'gpt-4o-mini'
+        self.image_model = 'dall-e-3'
+        self.concept0 = {}
 
 
     async def run(self):
+        self.status = 'processing'
         successful = False
         while not successful:
             try:
@@ -29,7 +36,12 @@ class AdGenerator:
 
         # for i, concept in enumerate(ad_concepts):  ## TODO: Remove index
         i = 0
+        await self.generate_ad_text(ad_concepts[i])
         await self.generate_image(i, ad_concepts[i])
+        await self.add_text_to_image(i, ad_concepts[i])
+
+        self.move_files_to_static(ad_concepts[i])
+        self.status = "done"
 
 
     async def generate_ad_concepts(self):
@@ -41,27 +53,22 @@ class AdGenerator:
 
         successful = False
         while not successful:
-            try:
-                response = ollama.chat(
-                    model='llama3.2',
-                    messages=[{
+            client = OpenAI(api_key=OPENAI_API_KEY)
+            completion = client.chat.completions.create(
+                model=self.text_model,
+                messages =[
+                    {
                         "role": "user",
                         "content": prompt
-                    }]
-                )
-
-            except Exception as e:
-                print(f"Ollama failed: {e}")
+                     }
+                ]
+            )
 
             try:
-                response_text = response["message"]["content"]
-
-                # Use regex to extract the JSON block inside triple backticks (```)
-                json_match = re.search(r"```(.*?)```", response_text, re.DOTALL)
-
+                response_text = completion.choices[0].message.content
+                json_match = response_text[response_text.find('{'):response_text.rfind('}')+1]
                 if json_match:
-                    json_str = json_match.group(1).strip()  # Extract JSON content
-                    parsed_json = json.loads(json_str)  # Convert to Python dictionary
+                    parsed_json = json.loads(json_match)  # Convert to Python dictionary
 
                     print(parsed_json.get("ads", []))
 
@@ -71,15 +78,16 @@ class AdGenerator:
                     raise Exception("No JSON block found in API response.")
 
             except json.JSONDecodeError as e:
+                print(f"JSONDecodeError: {e}")
                 raise
 
 
     async def generate_image(self, concept_num, image_concept):
         prompt = image_prompt.replace('<product>', self.product).replace('<audience>', self.audience).replace('<details>', image_concept['image']['details']).replace('<description>', image_concept['description']).replace('<emotion>', image_concept['image']['emotion'])
         print(prompt)
-        client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
+        client = OpenAI(api_key=OPENAI_API_KEY)
         response = client.images.generate(
-            model="dall-e-3",
+            model=self.image_model,
             prompt=prompt,
             size="1024x1024",
             quality="standard",
@@ -97,32 +105,65 @@ class AdGenerator:
             handler.write(img_data)
 
 
-    async def add_text_to_image(self):
-        image = Image.open("./api/input_image.jpg")  # replace with your image file
-        # Alternatively, create a new image:
-        # image = Image.new("RGB", (400, 300), color="white")
+    async def generate_ad_text(self, ad_concept):
+        prompt = ad_text_prompt.replace('<keyword>', self.product).replace('<title>', ad_concept['title']).replace('<description>',ad_concept['description']).replace('<key_message>',ad_concept['key_message'])
+        print()
+        print(prompt)
+        print()
+        client = OpenAI(api_key=OPENAI_API_KEY)
+        completion = client.chat.completions.create(
+            model=self.text_model,
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        )
+
+        response_text = completion.choices[0].message.content
+        ad_copy = {'headline': response_text[response_text.find('<headline>')+10:response_text.rfind('</headline>')]}
+        print(ad_copy['headline'])
+        ad_copy['body_text'] = response_text[response_text.find('<body_text>')+11:response_text.rfind('</body_text>')]
+        print(ad_copy['body_text'])
+        ad_copy['call_to_action'] = response_text[response_text.find('<call_to_action>')+16:response_text.rfind('</call_to_action>')]
+        print(ad_copy['call_to_action'])
+
+        ad_concept['copy'] = ad_copy
+
+
+    async def add_text_to_image(self, concept_num, ad_concept):
+        img = Image.open(f"./jobs/{self.id}/concept_{concept_num}.png")  # Load the image file
 
         # Create an ImageDraw object
-        draw = ImageDraw.Draw(image)
+        draw = ImageDraw.Draw(img)
 
         # Define the text and its properties
-        text = "Hello, World!"
-        position = (50, 50)  # (x, y) coordinates
-        fill_color = (255, 0, 0)  # red color in RGB
+        text = ad_concept['copy']['headline']
+        font = ImageFont.truetype("arial.ttf", size=30)
 
-        # Optionally, load a custom font
-        # Make sure the font file is accessible, and adjust the size as needed.
-        try:
-            font = ImageFont.truetype("arial".ttf", size=40)
-        except IOError:
-            # Fallback to default font if the specified font is not available
-            font = ImageFont.load_default(size=40)
+        # Calculate text bounding box (left, top, right, bottom)
+        bbox = draw.textbbox((0, 0), text, font=font)
+        text_width = bbox[2] - bbox[0]
 
-        # Add text to the image
-        draw.text(position, text, fill=fill_color, font=font)
+        # Center the text
+        x = (img.width - text_width) / 2
+        y = 50
+
+        # Define shadow offset
+        shadow_offset = 2
+
+        # Draw the drop shadow (black text, slightly offset)
+        draw.text((x + shadow_offset, y + shadow_offset), text, font=font, fill="black")
+
+        # Draw the main text (white text, centered)
+        draw.text((x, y), text, font=font, fill="white")
 
         # Save the edited image
-        image.save("output_image.jpg")
+        img.save(f"./jobs/{self.id}/concept_{concept_num}.png")
+        print("done")
 
-        # Optionally, display the image (for example, in a GUI environment)
-        image.show()
+    def move_files_to_static(self, ad_concept):
+        os.makedirs('static', exist_ok=True)
+        shutil.move(f'jobs/{self.id}', f'static/{self.id}')
+        self.concept0['url'] = f'static/{self.id}/concept_0.png'
