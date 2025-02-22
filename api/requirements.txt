@@ -1,4 +1,6 @@
-fastapi[standard] >= 0.115.6
-ollama >= 0.4.7
-openai >= 1.63.2
-aiofiles >= 24.1.0
+fastapi[standard]
+ollama
+openai
+aiofiles
+Pillow
+requests
