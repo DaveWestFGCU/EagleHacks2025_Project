@@ -1,8 +1,9 @@
 
-import asyncio, os
+import requests, asyncio, os
 import ollama
 from openai import OpenAI
 import json, re
+import pillow
 
 from .prompts.ad_concepts import prompt_text as ad_concept_prompt
 from .prompts.image_generation import prompt_text as image_prompt
@@ -26,8 +27,9 @@ class AdGenerator:
             else:
                 successful = True
 
-        for concept in ad_concepts:
-            await self.generate_image(concept['image'])
+        # for i, concept in enumerate(ad_concepts):  ## TODO: Remove index
+        i = 0
+        await self.generate_image(i, ad_concepts[i])
 
 
     async def generate_ad_concepts(self):
@@ -72,12 +74,10 @@ class AdGenerator:
                 raise
 
 
-
-    async def generate_image(self, image_concept):
-        print(image_concept
-              )
-        prompt = image_prompt.replace('<product>', image_concept['product']).replace('<audience>', image_concept['audience']).replace('<details>', image_concept['image']['details']).replace('<emotion>', image_concept['image']['emotion'])
-        client = OpenAI(api_key=os.environ.get(')OPENAI_API_KEY'))
+    async def generate_image(self, concept_num, image_concept):
+        prompt = image_prompt.replace('<product>', self.product).replace('<audience>', self.audience).replace('<details>', image_concept['image']['details']).replace('<description>', image_concept['description']).replace('<emotion>', image_concept['image']['emotion'])
+        print(prompt)
+        client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
         response = client.images.generate(
             model="dall-e-3",
             prompt=prompt,
@@ -87,3 +87,14 @@ class AdGenerator:
         )
 
         print(response.data[0].url)
+
+        img_data = requests.get(response.data[0].url).content
+        os.makedirs('jobs', exist_ok=True)
+        os.makedirs(f'jobs/{self.id}', exist_ok=True)
+
+        with open(f'jobs/{self.id}/concept_{concept_num}.png', 'wb') as handler:  # TODO: Implement different file names for more than 1 image
+            handler.write(img_data)
+
+
+    async def add_text_to_image(self):
+
