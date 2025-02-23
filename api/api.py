@@ -1,10 +1,22 @@
 import uuid, os
 
 from fastapi import FastAPI, BackgroundTasks, status, Form
+from contextlib import asynccontextmanager
 from starlette.responses import JSONResponse
 from starlette.staticfiles import StaticFiles
 
 from .ad_generator import AdGenerator
+from .logging_setup import listener
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Defines the logic before FastAPI starts up and after it shuts down.
+    """
+    listener.start()
+    yield
+    listener.stop()
 
 app = FastAPI()
 
@@ -38,7 +50,7 @@ async def new_job(background_tasks: BackgroundTasks,
 
     job_store[job_id] = AdGenerator(job_id, product, audience, goal)
 
-    background_tasks.add_task(job_store[job_id].sim_run)
+    background_tasks.add_task(job_store[job_id].run)
 
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,
