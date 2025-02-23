@@ -17,9 +17,13 @@
         <p>Data visualization will be available here soon.</p>
     </div>
 
-    <div style="width: 800px"><canvas id="graph1"></canvas></div>>
-    <div style="width: 800px"><canvas id="graph2"></canvas></div>>
-    <div style="width: 800px"><canvas id="graph3"></canvas></div>>
+    <div class="graph-container">
+        <div class= "content graph"><canvas id="graph1"></canvas></div>>
+        <div class= "content graph"><canvas id="graph4"></canvas></div>
+        <div class= "content graph"><canvas id="graph5"></canvas></div>
+        <div class= "content graph" ><canvas id="graph3"></canvas></div>>
+        <div class= "content graph" ><canvas id="graph2"></canvas></div>>
+    </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -28,7 +32,7 @@
                 
                 let products = [];       // Separate the ad pitches
                 let impressions = [];    
-                let ctrs = [];
+                
                 
                 data.forEach(row =>{
                     let product = row["Product/Service"];
@@ -94,7 +98,8 @@
 
                 // Now, you're likely trying to do something with the calculated cost per click values
                 costPerClick(products, costPerClicks);
-
+                clicksByAds(products, clicks);
+                costOfAds(products, costs);
             }
 
 
@@ -109,7 +114,7 @@
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: "Impressions By Ads",
+                            label: "Total Impressions of Ad Campaign",
                             data: values,
                             backgroundColor: "rgba(75, 192, 192, 0.5)"
                         }]
@@ -132,7 +137,7 @@
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: "Impressions by Website",
+                            label: "Total Impressions by Website",
                             data: values,
                             backgroundColor: "rgba(75, 192, 192, 0.5)"
                         }]
@@ -154,7 +159,51 @@
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: "Cost per Click for each Advertisement",
+                            label: "Cost per Click for each Ad Campaign",
+                            data: values,
+                            backgroundColor: "rgba(75, 192, 192, 0.5)"
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                });
+            }
+
+            function clicksByAds(labels, values){
+                let ctx = document.getElementById("graph4").getContext("2d");
+                if (!ctx) {
+                    console.error("Canvas element not found!");
+                    return;
+                }
+                new Chart(ctx, {
+                    type:"bar",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: "Total Clicks on Ad Campaigns",
+                            data: values,
+                            backgroundColor: "rgba(75, 192, 192, 0.5)"
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                });
+            }
+
+            function costOfAds(labels, values){
+                let ctx = document.getElementById("graph5").getContext("2d");
+                if (!ctx) {
+                    console.error("Canvas element not found!");
+                    return;
+                }
+                new Chart(ctx, {
+                    type:"bar",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: "Total cost of Ad Campaigns",
                             data: values,
                             backgroundColor: "rgba(75, 192, 192, 0.5)"
                         }]
