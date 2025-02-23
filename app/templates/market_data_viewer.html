@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marketing Data Viewer</title>
     <link rel="stylesheet" href="static/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     
@@ -15,8 +17,74 @@
         <p>Data visualization will be available here soon.</p>
     </div>
 
-    <div style="width: 800px"><canvas id = "graph1"></canvas></div>>
+    <div style="width: 800px"><canvas id="graph1"></canvas></div>>
 
-    <script src="static/script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            function processChartData(data) {
+                console.log("Parsed Data:", data); // Debugging
+
+                let categories = [];  // Should use "Channel"
+                let values = [];  // Should use a valid numerical column (e.g., "Impressions")
+
+                data.forEach(row => {
+                    let category = row["Channel"] || "Unknown";  // Use "Channel" instead of "Category"
+                    let value = parseFloat(row["Impressions"]  || row["Clicks"] || 0);  // Use a valid numeric field
+
+                    if (!categories.includes(category)) {
+                        categories.push(category);
+                        values.push(value);
+                    } else {
+                        let index = categories.indexOf(category);
+                        values[index] += value; // Aggregate values for the same category
+                    }
+                });
+
+                renderChart(categories, values);
+            }
+
+
+            function renderChart(labels, values) {
+                let ctx = document.getElementById("graph1").getContext("2d");
+                if (!ctx) {
+                    console.error("Canvas element not found!");
+                    return;
+                }
+                new Chart(ctx, {
+                    type: "bar",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: "Sales by Category",
+                            data: values,
+                            backgroundColor: "rgba(75, 192, 192, 0.5)"
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                });
+            }
+
+            fetch("/marketing_data.csv")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("CSV file not found");
+                    }
+                    return response.text();
+                })
+                .then(csvText => {
+                    console.log("CSV Loaded:", csvText);  // Debugging
+                    Papa.parse(csvText, {
+                        header: true,
+                        skipEmptyLines: true,
+                        complete: function (result) {
+                            processChartData(result.data);  // ✅ Now this function is defined
+                        }
+                    });
+                })
+                .catch(error => console.error("Error loading CSV:", error));
+        });
+    </script>
 </body>
 </html>
