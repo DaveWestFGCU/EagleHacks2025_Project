@@ -12,11 +12,12 @@
             <button id="toggle-font">Toggle Font Size</button>
             <button id="toggle-contrast">High Contrast</button>
         </div>
-        
-        {% if 'user' in session %}
-            <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
-        {% else %}
-            <a href="{{ url_for('login') }}" class="login-button">Login</a>
-        {% endif %}
+        <h1>
+            {% if 'user' in session %}
+                <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="login-button">Login</a>
+            {% endif %}
+        </h1>
     </div>
 </nav>
