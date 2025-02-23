@@ -14,10 +14,9 @@ document.addEventListener("DOMContentLoaded", function() {
       adContainer.classList.add("ad-grid"); 
 
       adData.forEach(ad => { 
-          ad.image = "app/static/concept_0.png";
-          
           const adElement = document.createElement("div");
           adElement.classList.add("ad-box");
+          ad.image = '/home/wcward/Documents/EagleHacks2025_Project/app/static/concept_0'
           adElement.innerHTML = `
               <div class="ad-title">${ad.title}</div>
               <img src="${ad.image}" alt="${ad.title}" class="ad-image">
@@ -108,7 +107,7 @@ async function checkStatus(taskId, submitButton) {
 
       if (result.status === 'done') {
           clearInterval(interval);
-          displayAds(result);  
+          displayAds(result, taskId);  
           submitButton.disabled = false;
           submitButton.innerHTML = 'Submit';
       } else if (result.message === 'Job is still in progress') {
@@ -122,9 +121,11 @@ async function checkStatus(taskId, submitButton) {
   }, 3000);
 }
 
-function displayAds(result) {
+function displayAds(result, taskId) {
   let adResults = document.getElementById('ad-results');
   adResults.innerHTML = `<h3>Generated Ad(s):</h3>`;
+  
+  console.log(result)
 
   for (let key in result) {
       if (!isNaN(key)) {  

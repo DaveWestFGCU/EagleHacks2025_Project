@@ -5,6 +5,8 @@ import auth
 import db
 import requests
 import os
+import shutil
+
 
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = 'your_secret_key'  # Needed for session management
@@ -158,6 +160,9 @@ def ad_generation():
 
     return render_template('ad_generation.html')
 
+
+
+
 @app.route('/check_status', methods=['GET'])
 def check_status():
     task_id = request.args.get('task_id')
@@ -165,21 +170,43 @@ def check_status():
     if not task_id:
         return jsonify({'error': 'Missing task_id'}), 400
 
-    # API endpoint for checking job status
     api_url = f"http://localhost:8000/job/{task_id}"
 
-    # Send the request to FastAPI's /job/{job_id} endpoint
     response = requests.get(api_url)
 
     if response.status_code == 200:
         print(response.json())
+
+        src_folder = f"/home/wcward/Documents/EagleHacks2025_Project/api/api/static/{task_id}"
+        dest_folder = f"/home/wcward/Documents/EagleHacks2025_Project/app/static/{task_id}"
+
+        try:
+            if os.path.exists(src_folder):
+                if not os.path.exists(dest_folder):
+                    os.makedirs(dest_folder)  
+                
+                for item in os.listdir(src_folder):
+                    src_path = os.path.join(src_folder, item)
+                    dest_path = os.path.join(dest_folder, item)
+                    
+                    if os.path.isdir(src_path):
+                        shutil.copytree(src_path, dest_path, dirs_exist_ok=True)
+                    else:
+                        shutil.copy2(src_path, dest_path)
+            else:
+                print("Source folder does not exist")
+        except Exception as e:
+            print(f"File copy failed: {e}")
+
         return jsonify(response.json()), 200
+
     elif response.status_code == 202:
         return jsonify({'message': 'Job is still in progress'}), 202
     elif response.status_code == 404:
         return jsonify({'error': 'Job not found'}), 404
     else:
         return jsonify({'error': 'Failed to fetch job status', 'details': response.json()}), response.status_code
+
 
 
 # ----------------- MARKET DATA VIEWER -----------------
