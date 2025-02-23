@@ -68,15 +68,16 @@ def register():
 
     salt = auth.generate_salt()
     pw_hash = auth.hash_pw(pw=password, salt=salt)
+    api_key = auth.generate_api_key()
 
     try:
         with db.connect() as conn, conn.cursor() as cursor:
             cursor.execute(
                 """
-                insert into users (username, pw_hash, salt)
-                values (%s, %s, %s);
+                insert into users (username, pw_hash, salt, api_key)
+                values (%s, %s, %s, %s);
                 """,
-                (username, pw_hash, salt),
+                (username, pw_hash, salt, api_key),
             )
     except UniqueViolation:
         return render_template('login.html', error='Username taken')
@@ -88,6 +89,27 @@ def register():
 def logout():
     session.pop('user', None)
     return redirect(url_for('login'))
+
+
+# ----------------- API KEY MANAGEMENT -----------------
+@app.route('/regenerate_api_key')
+def regenerate_api_key():
+    if 'user' not in session:
+        return 'Unauthorized', 401
+    user_id = session['user']
+    assert isinstance(user_id, int)
+    api_key = auth.generate_api_key()
+    with db.connect() as conn, conn.cursor() as cursor:
+        cursor.execute(
+            """
+            update users
+            set api_key = %s
+            where user_id = %s;
+            """,
+            (api_key, user_id),
+        )
+    return api_key
+
 
 # ----------------- DASHBOARD -----------------
 @app.route('/dashboard')
