@@ -45,12 +45,26 @@ def draw_custom_bold_text(draw, position, text, font, fill, offsets):
         draw.text((x+dx, y+dy), text, font=font, fill=fill)
 
 
+color_values = {
+    'red':    '#C70000',
+    'orange': '#C75000',
+    'yellow': '#C7BB00',
+    'green':  '#33C700',
+    'blue':   '#00AAC7',
+    'purple': '#9339FA',
+    'pink':   '#FA39F6',
+    'black':  '#747474',
+    'white':  '#D6D6D6'
+}
+
+
 class AdComposer:
-    def __init__(self, image_filepath, ad_copy):
-        self.image_filepath = image_filepath
-        self.headline_text = ad_copy['headline']
-        self.body_text = ad_copy['body_text']
-        self.call_to_action_text = ad_copy['call_to_action']
+    def __init__(self, campaign):
+        self.image_filepath = campaign['ad_filepath']
+        self.color_value = color_values[campaign['mood']['color']]
+        self.headline_text = campaign['copy']['headline']
+        self.body_text = campaign['copy']['body_text']
+        self.call_to_action_text = campaign['copy']['call_to_action']
 
 
     def compose_advertisement(self):
@@ -66,7 +80,7 @@ class AdComposer:
 
         # --- Color the Bottom 20% of the Left Bar with a Slightly Darker Yellow ---
         yellow_start = int(height * 0.8)
-        draw.rectangle([(0, yellow_start), (600, height)], fill="#FFCC00")
+        draw.rectangle([(0, yellow_start), (600, height)], fill=self.color_value)
 
         # --- Headline Text Block ---
         try:
@@ -89,17 +103,16 @@ class AdComposer:
         total_headline_height = sum(headline_line_heights) + headline_spacing * (len(headline_lines) - 1)
 
         # Position the headline block so its vertical center is at 5/24 of the image height
-        new_center = int(height * 5 / 24)
+        new_center = int(height * 5/24)
         headline_start_y = new_center - (total_headline_height // 2)
         current_y = headline_start_y
 
         # Draw headline text with full bold effect (boldness=1) in dark yellow "#FFCC00"
         for i, line in enumerate(headline_lines):
-            draw_bold_text(draw, (horizontal_padding, current_y), line, headline_font, fill="#FFCC00", boldness=1)
+            draw_bold_text(draw, (horizontal_padding, current_y), line, headline_font, fill=self.color_value, boldness=1)
             current_y += headline_line_heights[i] + headline_spacing
 
         # --- Body Text Block ---
-
         try:
             body_font = ImageFont.truetype("arial.ttf", 24)  # Regular font for body text
         except IOError:
@@ -116,9 +129,13 @@ class AdComposer:
         body_spacing = 16
         total_body_height = sum(body_line_heights) + body_spacing * (len(body_lines) - 1)
 
-        # Start body text block further below the headline block (60 pixels extra spacing)
-        extra_spacing_between = 60
-        body_start_y = current_y + extra_spacing_between
+        # Compute available vertical space for the body text block:
+        # It is the space between the bottom of the headline block and the top of the yellow area.
+        bottom_headline = headline_start_y + total_headline_height
+        available_body_space = yellow_start - bottom_headline
+
+        # Center the body text block in that available space
+        body_start_y = bottom_headline + (available_body_space - total_body_height) // 2
 
         # Define custom offsets for a moderate bold effect for the body text
         custom_offsets = [(0, 0), (1, 0), (0, 1)]
