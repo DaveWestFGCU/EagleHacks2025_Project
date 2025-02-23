@@ -47,8 +47,8 @@ def draw_custom_bold_text(draw, position, text, font, fill, offsets):
 
 color_values = {
     'red':    '#C70000',
-    'orange': '#C75000',
-    'yellow': '#C7BB00',
+    'orange': '#FF5733',
+    'yellow': '#FFC300',
     'green':  '#33C700',
     'blue':   '#00AAC7',
     'purple': '#9339FA',
