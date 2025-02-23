@@ -1,3 +1,18 @@
+# EagleHacks 2025 Team
+    
+## Daniel Kareh  
+User authentication and database creation.  
+
+## William Murphy  
+Data analytics and frontend development.  
+
+## William Ward  
+Frontend, backend, server development, and API communications.  
+
+## David West  
+FastAPI development, ad generation, and prompt engineering.  
+
+
 # AD Some AI 
 
 AD Some AI is an innovative platform that streamlines the ad creation process by leveraging artificial intelligence. Simply input a keyword, and our system will generate keyword-rich titles, pitches, and descriptions to optimize engagement. But that’s not all—AD Some AI also creates high-quality images tailored to your brand and incorporates your text directly onto those images. AD Some AI automates the entire process, saving you time while ensuring your ads are visually compelling and ready to use.
@@ -58,9 +73,3 @@ By doing this, we are able to generate ads using AI that include titles, descrip
 7. **Download or Use**  
    Once the ads are ready, you can download or directly use them for your campaigns.
 
-# EagleHacks 2025 Team
-    
-- **Daniel Kareh**
-- **William Murphy**
-- **William Ward**
-- **David West**
