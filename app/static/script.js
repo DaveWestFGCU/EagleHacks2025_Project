@@ -62,63 +62,64 @@ document.getElementById('adForm').addEventListener('submit', async function(even
   let submitButton = this.querySelector('button');
   submitButton.disabled = true;
   submitButton.innerHTML = 'Processing... <span class="loader"></span>'; // Add a spinner
-  
+
   let formData = new FormData(this);
-  
+
   let response = await fetch('/new_job', {
       method: 'POST',
       body: formData
   });
 
-  let result = await response.json(); 
+  let result = await response.json();
 
   if (result.error) {
       document.getElementById('ad-results').innerHTML = `<p style="color: red;">${result.error}</p>`;
       submitButton.disabled = false;
       submitButton.innerHTML = 'Submit';
   } else {
-      checkStatus(result.id, submitButton);
+\      checkStatus(result.job_id, submitButton);
   }
 });
 
 async function checkStatus(taskId, submitButton) {
   const interval = setInterval(async () => {
-      let response = await fetch(`/job/${taskId}`);
+      let response = await fetch(`/check_status?task_id=${taskId}`);  // Update to query Flask, which queries FastAPI
       let result = await response.json();
 
       if (result.status === 'done') {
           clearInterval(interval);
-          displayAds(result.generated_ad);
+          displayAds(result);  // Assuming result contains all the ad data
+          submitButton.disabled = false;
+          submitButton.innerHTML = 'Submit';
+      } else if (result.message === 'Job is still in progress') {
+          console.log('Job is still processing...');
+      } else {
+          clearInterval(interval);
+          document.getElementById('ad-results').innerHTML = `<p style="color: red;">Error: ${result.error || "Unknown issue"}</p>`;
           submitButton.disabled = false;
           submitButton.innerHTML = 'Submit';
       }
   }, 3000);
 }
 
+function displayAds(result) {
+  let adResults = document.getElementById('ad-results');
+  adResults.innerHTML = `<h3>Generated Ad(s):</h3>`;
 
-
-function displayAds(adData) {
-    let container = document.getElementById('ad-results');
-    container.innerHTML = ''; 
-
-    let grid = document.createElement('div');
-    grid.classList.add('ad-grid');
-
-    adData.forEach(ad => {
-        let adCard = document.createElement('div');
-        adCard.classList.add('ad-card');
-
-        adCard.innerHTML = `
-            <h3>${ad.title}</h3>
-            <p>${ad.description}</p>
-            <strong>${ad.key_message}</strong>
-        `;
-
-        grid.appendChild(adCard);
-    });
-
-    container.appendChild(grid);
+  // Iterate through the object keys
+  for (let key in result) {
+      if (!isNaN(key)) {  // Check if the key is a number (image index)
+          let imgPath = result[key];
+          adResults.innerHTML += `
+              <div style="display: inline-block; margin: 10px;">
+                  <img src="${imgPath}" alt="Generated Ad ${key}" style="max-width: 300px; border-radius: 10px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);">
+              </div>
+          `;
+      }
+  }
 }
+
+
 
 (async function() {
     const data = marketingData.data;
