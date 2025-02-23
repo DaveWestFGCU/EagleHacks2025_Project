@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, send_from_directory
 import llm_query
 from psycopg.errors import UniqueViolation
 import auth
 import db
 import requests
+import os
 
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = 'your_secret_key'  # Needed for session management
@@ -114,8 +115,8 @@ def regenerate_api_key():
 # ----------------- DASHBOARD -----------------
 @app.route('/dashboard')
 def dashboard():
-    if 'user' not in session:
-        return redirect(url_for('login'))
+    '''if 'user' not in session:
+        return redirect(url_for('login'))'''
     return render_template('dashboard.html')
 
 # ----------------- AD GENERATION -----------------
@@ -150,10 +151,6 @@ def ad_generation():
 
     return render_template('ad_generation.html')
 
-
-
-import requests
-
 @app.route('/check_status', methods=['GET'])
 def check_status():
     task_id = request.args.get('task_id')
@@ -181,8 +178,8 @@ def check_status():
 # ----------------- MARKET DATA VIEWER -----------------
 @app.route('/market_data_viewer')
 def market_data_viewer():
-    if 'user' not in session:
-        return redirect(url_for('login'))
+    '''if 'user' not in session:
+        return redirect(url_for('login'))'''
     return render_template('market_data_viewer.html')
 
 # ----------------- ERROR HANDLING -----------------
@@ -190,5 +187,15 @@ def market_data_viewer():
 def not_found(e):
     return render_template('404.html'), 404
 
+# --------------- CSV FILE DOWNLOAD -----------------
+@app.route("/marketing_data.csv")
+def serve_csv():
+    if os.path.exists("marketing_data.csv"):
+        return send_from_directory(".", "marketing_data.csv", mimetype="text/csv")
+
+
+    else:
+        return jsonify({"error": "CSV file not found"}), 404 
+    
 if __name__ == '__main__':
     app.run(debug=True, port=5050)
