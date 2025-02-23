@@ -4,3 +4,4 @@ __pycache__/
 /app/static/sim/
 /api/api/static/*
 !/api/api/static/.gitignore
+api/jobs/*

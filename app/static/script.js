@@ -1,55 +1,77 @@
-import Chart from 'chart.js/auto'
-import marketingData from './marketing_data.json'
+//import Chart from 'chart.js/auto'
+//import marketingData from './marketing_data.json'
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    try {
-        console.log("Received adData:", adData);
+  try {
+      console.log("Received adData:", adData);
 
-        if (!adData || !Array.isArray(adData)) {
-            console.error("Invalid data format:", adData);
-            return;
-        }
+      if (!adData || !Array.isArray(adData)) {
+          console.error("Invalid data format:", adData);
+          return;
+      }
 
-        const adContainer = document.getElementById("ad-results");
-        adContainer.innerHTML = "";
+      const adContainer = document.getElementById("ad-results");
+      adContainer.innerHTML = "";
+      adContainer.classList.add("ad-grid"); 
 
-        adData.forEach(ad => { 
-            ad.image = "app/static/concept_0.png"
-            const adElement = document.createElement("div");
-            adElement.classList.add("ad-box");
-            adElement.innerHTML = `
-                <img src=${ad.image} alt="${ad.title}" width="500" height="500">
-                <h3>${ad.title}</h3>
-                <p>${ad.description}</p>
-                <strong>${ad.key_message}</strong>
-            `;
-            adContainer.appendChild(adElement);
-        });
+      adData.forEach(ad => { 
+          ad.image = "app/static/concept_0.png";
+          
+          const adElement = document.createElement("div");
+          adElement.classList.add("ad-box");
+          adElement.innerHTML = `
+              <div class="ad-title">${ad.title}</div>
+              <img src="${ad.image}" alt="${ad.title}" class="ad-image">
+          `;
 
-    } catch (error) {
-        console.error("Error parsing ad data:", error);
-    }
+          adContainer.appendChild(adElement);
+      });
+
+  } catch (error) {
+      console.error("Error parsing ad data:", error);
+  }
 });
 
-//accessibility buttons
+
+
+
 document.addEventListener("DOMContentLoaded", function () {
   console.log("DOM fully loaded");
 
-  // Fix: Ensure the buttons exist before attaching event listeners
   const toggleFontButton = document.getElementById("toggle-font");
   const toggleContrastButton = document.getElementById("toggle-contrast");
 
   if (toggleFontButton) {
       toggleFontButton.addEventListener("click", function () {
           document.body.classList.toggle("large-font");
+
+          if (document.body.classList.contains("large-font")) {
+              localStorage.setItem("largeFont", "enabled");
+          } else {
+              localStorage.removeItem("largeFont");
+          }
       });
+
+      if (localStorage.getItem("largeFont") === "enabled") {
+          document.body.classList.add("large-font");
+      }
   }
 
   if (toggleContrastButton) {
       toggleContrastButton.addEventListener("click", function () {
           document.body.classList.toggle("high-contrast");
+
+          if (document.body.classList.contains("high-contrast")) {
+              localStorage.setItem("highContrast", "enabled");
+          } else {
+              localStorage.removeItem("highContrast");
+          }
       });
+
+      if (localStorage.getItem("highContrast") === "enabled") {
+          document.body.classList.add("high-contrast");
+      }
   }
 });
 
@@ -61,7 +83,7 @@ document.getElementById('adForm').addEventListener('submit', async function(even
   
   let submitButton = this.querySelector('button');
   submitButton.disabled = true;
-  submitButton.innerHTML = 'Processing... <span class="loader"></span>'; // Add a spinner
+  submitButton.innerHTML = 'Processing... <span class="loader"></span>'; 
 
   let formData = new FormData(this);
 
@@ -83,12 +105,12 @@ document.getElementById('adForm').addEventListener('submit', async function(even
 
 async function checkStatus(taskId, submitButton) {
   const interval = setInterval(async () => {
-      let response = await fetch(`/check_status?task_id=${taskId}`);  // Update to query Flask, which queries FastAPI
+      let response = await fetch(`/check_status?task_id=${taskId}`);  
       let result = await response.json();
 
       if (result.status === 'done') {
           clearInterval(interval);
-          displayAds(result);  // Assuming result contains all the ad data
+          displayAds(result);  
           submitButton.disabled = false;
           submitButton.innerHTML = 'Submit';
       } else if (result.message === 'Job is still in progress') {
@@ -106,9 +128,8 @@ function displayAds(result) {
   let adResults = document.getElementById('ad-results');
   adResults.innerHTML = `<h3>Generated Ad(s):</h3>`;
 
-  // Iterate through the object keys
   for (let key in result) {
-      if (!isNaN(key)) {  // Check if the key is a number (image index)
+      if (!isNaN(key)) {  
           let imgPath = result[key];
           adResults.innerHTML += `
               <div style="display: inline-block; margin: 10px;">

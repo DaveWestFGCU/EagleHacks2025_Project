@@ -12,24 +12,26 @@
     {% include 'navbar.html' %}
     
     <div class="container">
-        <h2>Enter Your Campaign Data</h2>
+        <h2>Lets Start Your Campaign</h2>
         <form id="adForm">
             <label for="field1">Product/Service Overview:</label>
             <input type="text" id="field1" name="field1" placeholder="Describe your product or service"><br>
-        
+    
             <label for="field2">Target Audience:</label>
             <input type="text" id="field2" name="field2" placeholder="Who is this campaign for?"><br>
-        
+    
             <label for="field3">Campaign Goal:</label>
             <input type="text" id="field3" name="field3" placeholder="What is the goal of this campaign?"><br>
-        
-            <button type="submit">Submit</button>
+    
+            <button type="submit">Generate Ads</button>
         </form>
-
-        <div class="results-container" id="ad-results"></div>
+    
+        <div id="ad-results" class="ad-grid"></div>
+    </div>
+    
         
     </div>
-
+    
     <script src="static/script.js"></script>
 </body>
 </html>
