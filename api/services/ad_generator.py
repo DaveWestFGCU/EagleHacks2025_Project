@@ -7,8 +7,6 @@ from api.api_key import OPENAI_API_KEY
 
 from .logging_setup import create_logger, create_handler, remove_queue_handler
 
-from api.prompts.audience import prompt as audience_prompt
-from api.prompts.goal import prompt as goal_prompt
 from api.prompts.mood import prompt as mood_prompt
 from api.prompts.ad_concepts import prompt as ad_concept_prompt
 from api.prompts.ad_text import prompt_text as ad_text_prompt

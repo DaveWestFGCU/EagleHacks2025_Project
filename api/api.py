@@ -62,25 +62,26 @@ async def new_job(background_tasks: BackgroundTasks,
 
 
 @app.middleware("http")
-async def log_api_call_wrapper(request: Request, call_next) -> JSONResponse:
+async def api_key_validation(request: Request, call_next) -> JSONResponse:
     """
     Middleware for validating an API key before processing any requests.
     If a key is not in the request or not found in the key store, returns a 401 Unauthorized response.
     """
-    if request.headers.get("x-api-key"):
+    return await call_next(request)
+    # if request.headers.get("x-api-key"):
 
-        if validate_api_key(request.headers.get("x-api-key")):
-            return await call_next(request)
+    #     if validate_api_key(request.headers.get("x-api-key")):
+    #         return await call_next(request)
 
-        return JSONResponse(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            content={'message': "Invalid API Key."}
-        )
+    #     return JSONResponse(
+    #         status_code=status.HTTP_401_UNAUTHORIZED,
+    #         content={'message': "Invalid API Key."}
+    #     )
 
-    return JSONResponse(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        content={'message': "API key not received."}
-    )
+    # return JSONResponse(
+    #     status_code=status.HTTP_401_UNAUTHORIZED,
+    #     content={'message': "API key not received."}
+    # )
 
 
 

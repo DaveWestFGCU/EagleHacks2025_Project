@@ -76,29 +76,42 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 document.getElementById('adForm').addEventListener('submit', async function(event) {
-  event.preventDefault();
+    event.preventDefault();
+    
+    let submitButton = this.querySelector('button');
+    submitButton.disabled = true;
+    submitButton.innerHTML = 'Processing... <span class="loader"></span>'; 
   
-  let submitButton = this.querySelector('button');
-  submitButton.disabled = true;
-  submitButton.innerHTML = 'Processing... <span class="loader"></span>'; 
-
-  let formData = new FormData(this);
-
-  let response = await fetch('/new_job', {
-      method: 'POST',
-      body: formData
+    let formData = new FormData(this);
+  
+    // Get field values
+    let field2 = formData.get('field2').trim();
+    let field3 = formData.get('field3').trim();
+  
+    // Set default values if empty
+    if (!field2) {
+        formData.set('field2', 'everyone');
+    }
+    if (!field3) {
+        formData.set('field3', 'awareness');
+    }
+  
+    let response = await fetch('/new_job', {
+        method: 'POST',
+        body: formData
+    });
+  
+    let result = await response.json();
+  
+    if (result.error) {
+        document.getElementById('ad-results').innerHTML = `<p style="color: red;">${result.error}</p>`;
+        submitButton.disabled = false;
+        submitButton.innerHTML = 'Submit';
+    } else {
+        checkStatus(result.job_id, submitButton);
+    }
   });
-
-  let result = await response.json();
-
-  if (result.error) {
-      document.getElementById('ad-results').innerHTML = `<p style="color: red;">${result.error}</p>`;
-      submitButton.disabled = false;
-      submitButton.innerHTML = 'Submit';
-  } else {
-      checkStatus(result.job_id, submitButton);
-  }
-});
+  
 
 async function checkStatus(taskId, submitButton) {
   const interval = setInterval(async () => {
