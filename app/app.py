@@ -115,8 +115,8 @@ def regenerate_api_key():
 # ----------------- DASHBOARD -----------------
 @app.route('/dashboard')
 def dashboard():
-    '''if 'user' not in session:
-        return redirect(url_for('login'))'''
+    if 'user' not in session:
+        return redirect(url_for('login'))
     return render_template('dashboard.html')
 
 # ----------------- AD GENERATION -----------------
@@ -178,8 +178,8 @@ def check_status():
 # ----------------- MARKET DATA VIEWER -----------------
 @app.route('/market_data_viewer')
 def market_data_viewer():
-    '''if 'user' not in session:
-        return redirect(url_for('login'))'''
+    if 'user' not in session:
+        return redirect(url_for('login'))
     return render_template('market_data_viewer.html')
 
 # ----------------- ERROR HANDLING -----------------
