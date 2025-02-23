@@ -1,4 +1,5 @@
 import uuid, os
+import psycopg
 from typing import Optional
 
 from fastapi import FastAPI, BackgroundTasks, Request, status, Form
@@ -11,7 +12,6 @@ from api.services.logging_setup import listener
 
 import app.db as db
 
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
@@ -19,12 +19,11 @@ async def lifespan(app: FastAPI):
     """
     listener.start()    # Logging queue listener
     update_key_store()
-
     yield
 
     listener.stop()
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 key_store = ['test_key_953209gnjgsaea09ulknfdln']
 job_store = {}
@@ -141,6 +140,7 @@ def update_key_store() -> None:
     Runs on API startup and when a key is not found to check it hasn't been added after the last update.
     Updating in this way also clears keys when a new user connects.
     """
+    return
     global key_store
     try:
         with db.connect() as conn, conn.cursor() as cursor:

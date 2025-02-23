@@ -7,6 +7,8 @@ from api.api_key import OPENAI_API_KEY
 
 from .logging_setup import create_logger, create_handler, remove_queue_handler
 
+from api.prompts.audience import prompt as audience_prompt
+from api.prompts.goal import prompt as goal_prompt
 from api.prompts.mood import prompt as mood_prompt
 from api.prompts.ad_concepts import prompt as ad_concept_prompt
 from api.prompts.ad_text import prompt_text as ad_text_prompt
@@ -19,9 +21,8 @@ class AdGenerator:
     def __init__(self, job_id, product, audience, goal):
         self.id = job_id
         self.product = product
-        self.audience = audience if audience is not None else 'everyone'
-        self.goal = goal if goal is not None else 'awareness'
-        self.goal = goal
+        self.audience = audience if audience not in ["", None] else 'everyone'
+        self.goal = goal if goal not in ["", None] else 'awareness'
         self.status = 'new'
         self.text_model = 'gpt-4o-mini'
         self.image_model = 'dall-e-3'
@@ -45,6 +46,8 @@ class AdGenerator:
     async def run(self):
         start_time = time.time()
         self.status = 'processing'
+
+        # Generating ad campaign moods
         self.ad_campaigns = await self.generate_ad_colors()
 
         # Generate ads in parallel
