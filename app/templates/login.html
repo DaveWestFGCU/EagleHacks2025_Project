@@ -13,11 +13,13 @@
                 <h1><a>Company name</a></h1>
             </div>
             <div class="nav-left">
-                {% if 'user' in session %}
-                    <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
-                {% else %}
-                <a href="{{ url_for('login') }}" class="login-button">Login</a>
-                {% endif %}
+                <h1>
+                    {% if 'user' in session %}
+                        <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
+                    {% else %}
+                    <a href="{{ url_for('login') }}" class="login-button">Login</a>
+                    {% endif %}
+                </h1>
             </div>
         </nav>
     </div>
