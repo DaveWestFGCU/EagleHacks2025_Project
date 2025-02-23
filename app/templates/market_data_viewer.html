@@ -18,6 +18,7 @@
     </div>
 
     <div style="width: 800px"><canvas id="graph1"></canvas></div>>
+    <div style="width: 800px"><canvas id="graph2"></canvas></div>>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -34,6 +35,23 @@
                 let ctrs = []
                 let costs = [];
                 
+                data.forEach(row =>{
+                    let product = row["Product/Service"];
+                    let impression = parseFloat(row["Impressions"]);
+
+                    if (!products.includes(product)) {
+                        products.push(product);
+                        impressions.push(impression);
+                    } else {
+                        let index = products.indexOf(product);
+                        impressions[index] += impression; // Aggregate values for the same category
+                    }
+
+                })
+
+                adByImpressions(products, impressions);
+
+                //  
                 data.forEach(row => {
                     let category = row["Channel"] || "Unknown";  // Use "Channel" instead of "Category"
                     let value = parseFloat(row["Impressions"]  || row["Clicks"] || 0);  // Use a valid numeric field
@@ -48,11 +66,36 @@
                 });
 
                 renderChart(categories, counts);
+
+
+            }
+
+
+            function adByImpressions(labels, values){
+                let ctx = document.getElementById("graph1").getContext("2d");
+                if (!ctx) {
+                    console.error("Canvas element not found!");
+                    return;
+                }
+                new Chart(ctx, {
+                    type:"bar",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: "Ads By Total Impressions",
+                            data: values,
+                            backgroundColor: "rgba(75, 192, 192, 0.5)"
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                });
             }
 
 
             function renderChart(labels, values) {
-                let ctx = document.getElementById("graph1").getContext("2d");
+                let ctx = document.getElementById("graph2").getContext("2d");
                 if (!ctx) {
                     console.error("Canvas element not found!");
                     return;
