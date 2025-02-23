@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: eaglehacks_db
+    restart: always
+    environment:
+      POSTGRES_DB: eaglehacks_2025
+      POSTGRES_USER: eaglehacks_2025
+      POSTGRES_PASSWORD: password  # Change this for security
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  pg_data:
