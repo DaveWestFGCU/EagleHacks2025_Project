@@ -1,3 +1,19 @@
+"""Authentication helper module
+
+This module handles salt generation, API key generation, password
+hashing, and database querying related to API keys.
+"""
+
+__all__ = [
+    'UnknownUserError',
+    'generate_api_key',
+    'generate_salt',
+    'get_user_api_key',
+    'hash_pw',
+    'lookup_user_id_from_api_key',
+    'pw_matches_hash',
+]
+
 from hashlib import scrypt
 from secrets import token_bytes, token_urlsafe
 
@@ -27,6 +43,11 @@ def generate_api_key() -> str:
 
 
 def lookup_user_id_from_api_key(api_key: str) -> int | None:
+    """Retrieve the ID of the user who owns the given API key, if any.
+
+    If nobody owns the API key, then `None` is returned. You can compare
+    the returned value to `None` to check the validity of an API key.
+    """
     with db.connect() as conn, conn.cursor() as cursor:
         record = cursor.execute(
             """
@@ -44,6 +65,8 @@ def lookup_user_id_from_api_key(api_key: str) -> int | None:
 
 
 class UnknownUserError(Exception):
+    """Raised when no user has a given user ID."""
+
     user_id: int
 
     def __init__(self, user_id: int):
@@ -52,6 +75,10 @@ class UnknownUserError(Exception):
 
 
 def get_user_api_key(user_id: int) -> str:
+    """Get the given user's current API key.
+
+    This raises an `UnknownUserError` if no user has the given ID.
+    """
     with db.connect() as conn, conn.cursor() as cursor:
         record = cursor.execute(
             """
