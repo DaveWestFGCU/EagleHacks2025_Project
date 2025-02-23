@@ -2,6 +2,13 @@
 
 AD Some AI is a innovative platform that streamlines the ad creation process by leveraging artifical intelligence. Simply input a keyword, and our system will generate you keyword-rich titles, pitches, and descriptions to optimize your engagement. But that’s not all—AD Some AI also creates high-quality images tailored to your brand and incorporates your text directly onto those images. AD Some AI automates the entire process, saving you time while ensuring your ads are visually compelling and ready to use.
 
+# Project Inspired By
+
+Our project was inspired by a request from the company **Eightpoint** to develop a solution that uses AI API connections to generate personalized ads based on a keyword or search term. They specified that the generated text should include a title, description, and a call to action. Motivated by this challenge, we leveraged OpenAI's API to not only generate text but also create images based on this text.
+
+By doing this, we are able to generate ads using AI that include titles, descriptions, and calls to action directly on the images, providing all-in-one ads ready for use.
+
+
 # Key Features
 
 - **AI-Generated Ad Content**:  
