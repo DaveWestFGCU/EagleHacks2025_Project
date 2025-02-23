@@ -19,7 +19,8 @@ class AdGenerator:
     def __init__(self, job_id, product, audience, goal):
         self.id = job_id
         self.product = product
-        self.audience = audience
+        self.audience = audience if audience is not None else 'everyone'
+        self.goal = goal if goal is not None else 'awareness'
         self.goal = goal
         self.status = 'new'
         self.text_model = 'gpt-4o-mini'
