@@ -28,6 +28,7 @@ def authenticate():
     if not password:
         return render_template('login.html', error='Password cannot be empty')
 
+    # Find information about the given username.
     with db.connect() as conn, conn.cursor() as cursor:
         record = cursor.execute(
             """
@@ -49,6 +50,7 @@ def authenticate():
     assert isinstance(pw_hash, bytes)
     assert isinstance(salt, bytes)
 
+    # Only login if the password and hash match.
     if auth.pw_matches_hash(pw=password, salt=salt, hash=pw_hash):
         session['user'] = user_id
         return redirect(url_for('dashboard'))
@@ -67,6 +69,7 @@ def register():
     if not password:
         return render_template('login.html', error='Password cannot be empty')
 
+    # Hash the password before putting it in the database.
     salt = auth.generate_salt()
     pw_hash = auth.hash_pw(pw=password, salt=salt)
     api_key = auth.generate_api_key()
@@ -81,6 +84,7 @@ def register():
                 (username, pw_hash, salt, api_key),
             )
     except UniqueViolation:
+        # We're relying on the `username` column's `unique` constraint.
         return render_template('login.html', error='Username taken')
     else:
         return render_template('login.html')
@@ -95,10 +99,12 @@ def logout():
 # ----------------- API KEY MANAGEMENT -----------------
 @app.route('/regenerate_api_key')
 def regenerate_api_key():
+    # You must be logged in to regenerate your API key.
     if 'user' not in session:
         return 'Unauthorized', 401
     user_id = session['user']
     assert isinstance(user_id, int)
+    # Generate a new key and insert it into the database.
     api_key = auth.generate_api_key()
     with db.connect() as conn, conn.cursor() as cursor:
         cursor.execute(
@@ -109,6 +115,7 @@ def regenerate_api_key():
             """,
             (api_key, user_id),
         )
+    # Return the new API key.
     return api_key
 
 

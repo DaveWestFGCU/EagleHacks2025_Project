@@ -1,12 +1,13 @@
 import uuid, os
+from typing import Optional
 
 from fastapi import FastAPI, BackgroundTasks, status, Form
 from contextlib import asynccontextmanager
 from starlette.responses import JSONResponse
 from starlette.staticfiles import StaticFiles
 
-from .ad_generator import AdGenerator
-from .logging_setup import listener
+from api.services.ad_generator import AdGenerator
+from api.services.logging_setup import listener
 
 
 @asynccontextmanager
@@ -32,16 +33,11 @@ async def read_root():
 
 @app.post("/new_job")
 async def new_job(background_tasks: BackgroundTasks,
-                  product: str = Form(...),
-                  audience: str = Form(...),
-                  goal: str = Form(...)) -> JSONResponse:
+                  product : str = Form(...),
+                  audience : Optional[str] = Form(None),
+                  goal : Optional[str] = Form(None)) -> JSONResponse:
     """
     Endpoint for creating a new job.
-    :param background_tasks: Function(s) to run after responding.
-    :param product:
-    :param audience:
-    :param goal:
-    :return:
     """
 
     job_id = str(uuid.uuid4())

@@ -3,6 +3,7 @@ prompt_text = \
 The title for this ad campaign is <title>.
 The concept for this ad campaign is <description>.
 The main takeaway that we want to impart is <key_message>.
+The mood for the ad is \'<association>\'.
 
 Return the response in the following format:
 <headline>Your Headline</headline>
