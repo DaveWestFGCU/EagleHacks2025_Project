@@ -7,7 +7,7 @@
 }
 
 body {
-    background: linear-gradient(135deg, #007bff, #00c853);
+    background: #fff;
     color: #333;
     min-height: 100vh;
     line-height: 1.6;
@@ -20,7 +20,7 @@ body {
     margin: 20px auto;
     padding: 20px;
     background: #fff;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
     
 }
 
@@ -43,9 +43,10 @@ body {
 .navbar {
     display: flex;
     justify-content: space-between;
-    background: #007bff;
+    background: #0B0BFF;
     padding: 15px 30px;
     color: white;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2) ;
     border-radius: 8px;
 }
 
@@ -165,10 +166,20 @@ button:hover {
 }
 
 /* Market Data Graphs */
+.graph-container{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.graph{
+    width: 800px;
+}
+
 canvas {
     max-width: 100%;
     height: auto;
 }
+
 
 /* Generated Ads Section - Grid Layout */
 /* Grid Layout for Ads */
