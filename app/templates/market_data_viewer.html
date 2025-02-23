@@ -19,19 +19,16 @@
 
     <div style="width: 800px"><canvas id="graph1"></canvas></div>>
     <div style="width: 800px"><canvas id="graph2"></canvas></div>>
+    <div style="width: 800px"><canvas id="graph3"></canvas></div>>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             function processChartData(data) {
                 console.log("Parsed Data:", data); // Debugging
                 
-                let dates = [];          // Separate the dates  
                 let products = [];       // Separate the ad pitches
                 let impressions = [];    
-                let clicks = [];
-                let conversions = [];
-                let ctrs = []
-                let costs = [];
+                let ctrs = [];
                 
                 data.forEach(row =>{
                     let product = row["Product/Service"];
@@ -48,7 +45,7 @@
                 })
 
                 impressionsByAds(products, impressions);
-                
+
                 let categories = [];    // Should use "Channel"
                 let counts = [];         // Should use a valid numerical column (e.g., "Impressions")                
                   
@@ -65,6 +62,38 @@
                     }
                 });
                 impressionsByWebsite(categories, counts);       
+
+                products = [];
+                let clicks = [];
+                let costs = [];
+                let costPerClicks = [];
+
+                data.forEach(row => {
+                    let product = row["Product/Service"];
+                    let click = parseFloat(row["Clicks"]);
+                    let cost = parseFloat(row["Cost ($)"]);
+
+                    // If the product is not already in the products array, add it
+                    if (!products.includes(product)) {
+                        products.push(product);
+                        clicks.push(click);
+                        costs.push(cost);
+                    } else {
+                        // If the product exists, update the clicks and costs
+                        let index = products.indexOf(product);
+                        clicks[index] += click;
+                        costs[index] += cost;
+                    }
+                });
+
+                // Calculate the cost per click for each product
+                products.forEach((product, index) => {
+                    let costOverClicks = costs[index] / clicks[index];
+                    costPerClicks.push(costOverClicks);
+                });
+
+                // Now, you're likely trying to do something with the calculated cost per click values
+                costPerClick(products, costPerClicks);
 
             }
 
@@ -104,6 +133,28 @@
                         labels: labels,
                         datasets: [{
                             label: "Impressions by Website",
+                            data: values,
+                            backgroundColor: "rgba(75, 192, 192, 0.5)"
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                });
+            }
+
+            function costPerClick(labels, values){
+                let ctx = document.getElementById("graph3").getContext("2d");
+                if (!ctx) {
+                    console.error("Canvas element not found!");
+                    return;
+                }
+                new Chart(ctx, {
+                    type: "bar",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: "Cost per Click for each Advertisement",
                             data: values,
                             backgroundColor: "rgba(75, 192, 192, 0.5)"
                         }]
