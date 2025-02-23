@@ -25,6 +25,13 @@
     </div>
 
     <div class="login-container">
+        {% if error %}
+        <div class="error-box">
+            <span class="error-message">{{ error }}</span>
+            <div class="error-close">&times;</div>
+        </div>
+        {% endif %}
+
         <h2 id="login-title">Login</h2>
         <form method="POST" action="/login">
             <label for="username">Username:</label>
@@ -37,5 +44,14 @@
             <button type="submit" formaction="/register">Register</button>
         </form>
     </div>
+
+    <script>
+        document.querySelectorAll(".error-box").forEach((box) => {
+            const close = box.querySelector(".error-close");
+            close.addEventListener("click", () => {
+                box.style.display = "none";
+            });
+        });
+    </script>
 </body>
 </html>
