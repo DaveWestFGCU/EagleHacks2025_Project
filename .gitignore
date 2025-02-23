@@ -5,3 +5,5 @@ __pycache__/
 /api/api/static/*
 !/api/api/static/.gitignore
 api/jobs/*
+/app/venv
+/api/venv
