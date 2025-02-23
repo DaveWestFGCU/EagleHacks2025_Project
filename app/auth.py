@@ -41,3 +41,28 @@ def lookup_user_id_from_api_key(api_key: str) -> int | None:
         user_id = record.user_id
         assert isinstance(user_id, int)
         return user_id
+
+
+class UnknownUserError(Exception):
+    user_id: int
+
+    def __init__(self, user_id: int):
+        super().__init__(f"Unknown user ID '{user_id}'")
+        self.user_id = user_id
+
+
+def get_user_api_key(user_id: int) -> str:
+    with db.connect() as conn, conn.cursor() as cursor:
+        record = cursor.execute(
+            """
+            select api_key
+            from users
+            where user_id = %s;
+            """,
+            (user_id,),
+        ).fetchone()
+        if not record:
+            raise UnknownUserError(user_id)
+        api_key = record.api_key
+        assert isinstance(api_key, str)
+        return api_key
