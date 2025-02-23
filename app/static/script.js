@@ -1,55 +1,77 @@
-import Chart from 'chart.js/auto'
-import marketingData from './marketing_data.json'
+//import Chart from 'chart.js/auto'
+//import marketingData from './marketing_data.json'
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    try {
-        console.log("Received adData:", adData);
+  try {
+      console.log("Received adData:", adData);
 
-        if (!adData || !Array.isArray(adData)) {
-            console.error("Invalid data format:", adData);
-            return;
-        }
+      if (!adData || !Array.isArray(adData)) {
+          console.error("Invalid data format:", adData);
+          return;
+      }
 
-        const adContainer = document.getElementById("ad-results");
-        adContainer.innerHTML = "";
+      const adContainer = document.getElementById("ad-results");
+      adContainer.innerHTML = "";
+      adContainer.classList.add("ad-grid"); 
 
-        adData.forEach(ad => { 
-            ad.image = "app/static/concept_0.png"
-            const adElement = document.createElement("div");
-            adElement.classList.add("ad-box");
-            adElement.innerHTML = `
-                <img src=${ad.image} alt="${ad.title}" width="500" height="500">
-                <h3>${ad.title}</h3>
-                <p>${ad.description}</p>
-                <strong>${ad.key_message}</strong>
-            `;
-            adContainer.appendChild(adElement);
-        });
+      adData.forEach(ad => { 
+          ad.image = "app/static/concept_0.png";
+          
+          const adElement = document.createElement("div");
+          adElement.classList.add("ad-box");
+          adElement.innerHTML = `
+              <div class="ad-title">${ad.title}</div>
+              <img src="${ad.image}" alt="${ad.title}" class="ad-image">
+          `;
 
-    } catch (error) {
-        console.error("Error parsing ad data:", error);
-    }
+          adContainer.appendChild(adElement);
+      });
+
+  } catch (error) {
+      console.error("Error parsing ad data:", error);
+  }
 });
 
-//accessibility buttons
+
+
+
 document.addEventListener("DOMContentLoaded", function () {
   console.log("DOM fully loaded");
 
-  // Fix: Ensure the buttons exist before attaching event listeners
   const toggleFontButton = document.getElementById("toggle-font");
   const toggleContrastButton = document.getElementById("toggle-contrast");
 
   if (toggleFontButton) {
       toggleFontButton.addEventListener("click", function () {
           document.body.classList.toggle("large-font");
+
+          if (document.body.classList.contains("large-font")) {
+              localStorage.setItem("largeFont", "enabled");
+          } else {
+              localStorage.removeItem("largeFont");
+          }
       });
+
+      if (localStorage.getItem("largeFont") === "enabled") {
+          document.body.classList.add("large-font");
+      }
   }
 
   if (toggleContrastButton) {
       toggleContrastButton.addEventListener("click", function () {
           document.body.classList.toggle("high-contrast");
+
+          if (document.body.classList.contains("high-contrast")) {
+              localStorage.setItem("highContrast", "enabled");
+          } else {
+              localStorage.removeItem("highContrast");
+          }
       });
+
+      if (localStorage.getItem("highContrast") === "enabled") {
+          document.body.classList.add("high-contrast");
+      }
   }
 });
 
@@ -61,64 +83,64 @@ document.getElementById('adForm').addEventListener('submit', async function(even
   
   let submitButton = this.querySelector('button');
   submitButton.disabled = true;
-  submitButton.innerHTML = 'Processing... <span class="loader"></span>'; // Add a spinner
-  
+  submitButton.innerHTML = 'Processing... <span class="loader"></span>'; 
+
   let formData = new FormData(this);
-  
+
   let response = await fetch('/new_job', {
       method: 'POST',
       body: formData
   });
 
-  let result = await response.json(); 
+  let result = await response.json();
 
   if (result.error) {
       document.getElementById('ad-results').innerHTML = `<p style="color: red;">${result.error}</p>`;
       submitButton.disabled = false;
       submitButton.innerHTML = 'Submit';
   } else {
-      checkStatus(result.id, submitButton);
+      checkStatus(result.job_id, submitButton);
   }
 });
 
 async function checkStatus(taskId, submitButton) {
   const interval = setInterval(async () => {
-      let response = await fetch(`/job/${taskId}`);
+      let response = await fetch(`/check_status?task_id=${taskId}`);  
       let result = await response.json();
 
       if (result.status === 'done') {
           clearInterval(interval);
-          displayAds(result.generated_ad);
+          displayAds(result);  
+          submitButton.disabled = false;
+          submitButton.innerHTML = 'Submit';
+      } else if (result.message === 'Job is still in progress') {
+          console.log('Job is still processing...');
+      } else {
+          clearInterval(interval);
+          document.getElementById('ad-results').innerHTML = `<p style="color: red;">Error: ${result.error || "Unknown issue"}</p>`;
           submitButton.disabled = false;
           submitButton.innerHTML = 'Submit';
       }
   }, 3000);
 }
 
+function displayAds(result) {
+  let adResults = document.getElementById('ad-results');
+  adResults.innerHTML = `<h3>Generated Ad(s):</h3>`;
 
-
-function displayAds(adData) {
-    let container = document.getElementById('ad-results');
-    container.innerHTML = ''; 
-
-    let grid = document.createElement('div');
-    grid.classList.add('ad-grid');
-
-    adData.forEach(ad => {
-        let adCard = document.createElement('div');
-        adCard.classList.add('ad-card');
-
-        adCard.innerHTML = `
-            <h3>${ad.title}</h3>
-            <p>${ad.description}</p>
-            <strong>${ad.key_message}</strong>
-        `;
-
-        grid.appendChild(adCard);
-    });
-
-    container.appendChild(grid);
+  for (let key in result) {
+      if (!isNaN(key)) {  
+          let imgPath = result[key];
+          adResults.innerHTML += `
+              <div style="display: inline-block; margin: 10px;">
+                  <img src="${imgPath}" alt="Generated Ad ${key}" style="max-width: 300px; border-radius: 10px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);">
+              </div>
+          `;
+      }
+  }
 }
+
+
 
 (async function() {
     const data = marketingData.data;

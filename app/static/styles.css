@@ -1,112 +1,91 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 40px;
-    background-color: #041628;
-    color: white;
-}
-.container {
-    max-width: 600px;
-    margin: auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    color: black;
-}
-h2 {
-    text-align: center;
-}
-label {
-    font-weight: bold;
-    display: block;
-    margin-top: 10px;
-}
-input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-button:hover {
-    background-color: #0056b3;
-}
-.results-container {
-    display: flex;
-    justify-content: space-between;
-    gap: 15px;
-    margin-top: 20px;
-}
-.ad-box {
-    flex: 1;
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    color: black;
-}
-@media (max-width: 768px) {
-    .results-container {
-        flex-direction: column;
-    }
-}
-
-
-body {
-    font-family: Arial, sans-serif;
+/* General Reset */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
+body {
+    background: linear-gradient(135deg, #007bff, #00c853);
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+.container, .content {
+    width: 80%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Navbar */
 .navbar {
-    background-color: #333;
-    padding: 10px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    background: #007bff;
+    padding: 15px 30px;
+    color: white;
+    border-radius: 8px;
 }
 
 .navbar a {
     color: white;
     text-decoration: none;
-    padding: 10px 15px;
+    margin: 0 15px;
 }
 
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+}
+
+/* Accessibility Menu */
 .accessibility-menu {
     display: flex;
     gap: 10px;
 }
 
-button {
-    cursor: pointer;
+.accessibility-menu button {
+    background: #fff;
+    color: #007bff;
+    border: none;
     padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
-/* Accessibility Features */
+.accessibility-menu button:hover {
+    background: #007bff;
+    color: #fff;
+}
+
+/* Accessibility Modes */
 .large-font {
-    font-size: 1.5em;
+    font-size: 1.2em;
 }
 
-/* Default Light Mode */
-body {
-    background-color: #ffffff;
-    color: #000000;
+.large-font h1, .large-font h2, .large-font h3 {
+    font-size: 1.6em;
 }
 
-/* High-Contrast Mode */
+.large-font p, .large-font label, .large-font input, .large-font button {
+    font-size: 1.3em;
+}
+
+
 .high-contrast {
-    background-color: #000000 !important;
-    color: #ffffff !important;
+    background: #000 !important;
+    color: #fff !important;
 }
 
 .high-contrast a {
@@ -115,49 +94,89 @@ body {
 }
 
 .high-contrast button {
-    background-color: #ffcc00 !important;
-    color: #000000 !important;
-    border: 2px solid #ffffff !important;
+    background: #ffcc00 !important;
+    color: #000 !important;
+    border: 2px solid #fff !important;
 }
 
-.high-contrast .ad-card {
-    background: #222222 !important;
-    color: #ffffff !important;
-    border: 1px solid #ffcc00;
+.high-contrast .container, .high-contrast .content {
+    background: #222 !important;
+    color: #fff !important;
+    border: 1px solid #ffcc00 !important;
 }
 
-
-
-.results-container {
-    margin-top: 20px;
+/* Forms */
+form {
+    display: flex;
+    flex-direction: column;
 }
 
-.ad-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 items per row */
-    gap: 20px;
+label {
+    font-weight: bold;
+    margin-top: 10px;
 }
 
-.ad-card {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+input {
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.3s ease-in-out;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+/* 404 Page */
+.container h1 {
+    color: red;
     text-align: center;
 }
 
-.loader {
-    border: 2px solid #f3f3f3; /* Light grey */
-    border-top: 2px solid #007bff; /* Blue */
-    border-radius: 50%;
-    width: 12px;
-    height: 12px;
-    animation: spin 1s linear infinite;
-    display: inline-block;
-    margin-left: 8px;
+.container p {
+    text-align: center;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+/* Market Data Graphs */
+canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Generated Ads Section - Grid Layout */
+/* Grid Layout for Ads */
+.ad-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    justify-content: center;
+    align-items: start; /* Align items at the top */
+    margin-top: 20px;
+    padding: 10px;
+}
+
+/* Ad Box Styling */
+.generated-ads {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* Centers images */
+  gap: 20px; /* Adds spacing between images */
+}
+
+.generated-ads img {
+  max-width: 300px; /* Adjust size as needed */
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }

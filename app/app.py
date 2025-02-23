@@ -3,6 +3,7 @@ import llm_query
 from psycopg.errors import UniqueViolation
 import auth
 import db
+import requests
 
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = 'your_secret_key'  # Needed for session management
@@ -67,15 +68,16 @@ def register():
 
     salt = auth.generate_salt()
     pw_hash = auth.hash_pw(pw=password, salt=salt)
+    api_key = auth.generate_api_key()
 
     try:
         with db.connect() as conn, conn.cursor() as cursor:
             cursor.execute(
                 """
-                insert into users (username, pw_hash, salt)
-                values (%s, %s, %s);
+                insert into users (username, pw_hash, salt, api_key)
+                values (%s, %s, %s, %s);
                 """,
-                (username, pw_hash, salt),
+                (username, pw_hash, salt, api_key),
             )
     except UniqueViolation:
         return render_template('login.html', error='Username taken')
@@ -87,6 +89,27 @@ def register():
 def logout():
     session.pop('user', None)
     return redirect(url_for('login'))
+
+
+# ----------------- API KEY MANAGEMENT -----------------
+@app.route('/regenerate_api_key')
+def regenerate_api_key():
+    if 'user' not in session:
+        return 'Unauthorized', 401
+    user_id = session['user']
+    assert isinstance(user_id, int)
+    api_key = auth.generate_api_key()
+    with db.connect() as conn, conn.cursor() as cursor:
+        cursor.execute(
+            """
+            update users
+            set api_key = %s
+            where user_id = %s;
+            """,
+            (api_key, user_id),
+        )
+    return api_key
+
 
 # ----------------- DASHBOARD -----------------
 @app.route('/dashboard')
@@ -109,23 +132,51 @@ def ad_generation():
         if not field1 or not field2 or not field3:
             return jsonify({'error': 'Missing fields'}), 400
         
-        data = {
-            'Product/Service Overview': field1,
-            'Target Audience': field2,
-            'Campaign Goal': field3
-        }
-        
-        result = llm_query.query_model('ad_gen', data)
-        return jsonify({'generated_ad': result})
-    
+        # API endpoint of the FastAPI service
+        api_url = "http://localhost:8000/new_job"  # Adjust if hosted elsewhere
+
+        # Send the request to FastAPI's /new_job endpoint
+        response = requests.post(api_url, data={
+            'product': field1,
+            'audience': field2,
+            'goal': field3
+        })
+
+        if response.status_code == 201:
+            job_id = response.json().get('id')
+            return jsonify({'message': 'Job started', 'job_id': job_id})
+        else:
+            return jsonify({'error': 'Failed to create job', 'details': response.json()}), response.status_code
+
     return render_template('ad_generation.html')
 
+
+
+import requests
 
 @app.route('/check_status', methods=['GET'])
 def check_status():
     task_id = request.args.get('task_id')
-    
-    return jsonify({'status': 'done'}), 200
+
+    if not task_id:
+        return jsonify({'error': 'Missing task_id'}), 400
+
+    # API endpoint for checking job status
+    api_url = f"http://localhost:8000/job/{task_id}"
+
+    # Send the request to FastAPI's /job/{job_id} endpoint
+    response = requests.get(api_url)
+
+    if response.status_code == 200:
+        print(response.json())
+        return jsonify(response.json()), 200
+    elif response.status_code == 202:
+        return jsonify({'message': 'Job is still in progress'}), 202
+    elif response.status_code == 404:
+        return jsonify({'error': 'Job not found'}), 404
+    else:
+        return jsonify({'error': 'Failed to fetch job status', 'details': response.json()}), response.status_code
+
 
 # ----------------- MARKET DATA VIEWER -----------------
 @app.route('/market_data_viewer')
