@@ -1,6 +1,6 @@
 # AD Some AI 
 
-AD Some AI is a innovative platform that streamlines the ad creation process by leveraging artifical intelligence. Simply input a keyword, and our system will generate you keyword-rich titles, pitches, and descriptions to optimize your engagement. But that’s not all—AD Some AI also creates high-quality images tailored to your brand and incorporates your text directly onto those images. AD Some AI automates the entire process, saving you time while ensuring your ads are visually compelling and ready to use.
+AD Some AI is an innovative platform that streamlines the ad creation process by leveraging artificial intelligence. Simply input a keyword, and our system will generate keyword-rich titles, pitches, and descriptions to optimize engagement. But that’s not all—AD Some AI also creates high-quality images tailored to your brand and incorporates your text directly onto those images. AD Some AI automates the entire process, saving you time while ensuring your ads are visually compelling and ready to use.
 
 # Project Inspired By
 
