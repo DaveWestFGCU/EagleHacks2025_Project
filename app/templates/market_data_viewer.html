@@ -27,8 +27,6 @@
                 
                 let dates = [];          // Separate the dates  
                 let products = [];       // Separate the ad pitches
-                let categories = [];    // Should use "Channel"
-                let counts = [];         // Should use a valid numerical column (e.g., "Impressions")
                 let impressions = [];    
                 let clicks = [];
                 let conversions = [];
@@ -49,12 +47,14 @@
 
                 })
 
-                adByImpressions(products, impressions);
-
-                //  
+                impressionsByAds(products, impressions);
+                
+                let categories = [];    // Should use "Channel"
+                let counts = [];         // Should use a valid numerical column (e.g., "Impressions")                
+                  
                 data.forEach(row => {
                     let category = row["Channel"] || "Unknown";  // Use "Channel" instead of "Category"
-                    let value = parseFloat(row["Impressions"]  || row["Clicks"] || 0);  // Use a valid numeric field
+                    let value = parseFloat(row["Impressions"]);  // Use a valid numeric field
 
                     if (!categories.includes(category)) {
                         categories.push(category);
@@ -64,14 +64,12 @@
                         counts[index] += value; // Aggregate values for the same category
                     }
                 });
-
-                renderChart(categories, counts);
-
+                impressionsByWebsite(categories, counts);       
 
             }
 
 
-            function adByImpressions(labels, values){
+            function impressionsByAds(labels, values){
                 let ctx = document.getElementById("graph1").getContext("2d");
                 if (!ctx) {
                     console.error("Canvas element not found!");
@@ -82,7 +80,7 @@
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: "Ads By Total Impressions",
+                            label: "Impressions By Ads",
                             data: values,
                             backgroundColor: "rgba(75, 192, 192, 0.5)"
                         }]
@@ -94,7 +92,7 @@
             }
 
 
-            function renderChart(labels, values) {
+            function impressionsByWebsite(labels, values) {
                 let ctx = document.getElementById("graph2").getContext("2d");
                 if (!ctx) {
                     console.error("Canvas element not found!");
@@ -105,7 +103,7 @@
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: "Sales by Category",
+                            label: "Impressions by Website",
                             data: values,
                             backgroundColor: "rgba(75, 192, 192, 0.5)"
                         }]
