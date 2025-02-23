@@ -1,3 +1,6 @@
 /venv
 __pycache__/
 /api/api_key.py
+/app/static/sim/
+/api/api/static/*
+!/api/api/static/.gitignore
