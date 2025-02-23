@@ -91,7 +91,6 @@ class AdGenerator:
     async def generate_ad(self, i, campaign):
         campaign['concept'] = await self.generate_ad_concept(campaign)
         campaign['copy'] = await self.generate_ad_text(campaign)
-        print(f'\n{campaign}\n')
         campaign['ad_filepath'] = await self.generate_image(i, campaign)
         AdComposer(campaign).compose_advertisement()
 
@@ -236,4 +235,4 @@ class AdGenerator:
         shutil.move(f'jobs/{self.id}', f'api/static/{self.id}')
         for filename in os.listdir(os.path.join('api', 'static', self.id)):
             if filename.lower().endswith(".png"):
-                self.image_locations.append(os.path.join('../static', self.id, filename).replace('\\', '/'))
+                self.image_locations.append(os.path.join('static', self.id, filename).replace('\\', '/'))
