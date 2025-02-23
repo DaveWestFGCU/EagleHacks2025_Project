@@ -3,15 +3,18 @@ import requests, asyncio, os, shutil, time
 from openai import AsyncOpenAI, BadRequestError
 import json
 from PIL import Image, ImageDraw, ImageFont
-import logging
 
-from .logging_setup import queue_handler, listener
+
+from .api_key import OPENAI_API_KEY
+
+from .logging_setup import create_logger, create_handler, remove_queue_handler
 
 from .prompts.ad_concepts import prompt_text as ad_concept_prompt
 from .prompts.ad_text import prompt_text as ad_text_prompt
 from .prompts.image_generation import prompt_text as image_prompt
 
-from .api_key import OPENAI_API_KEY
+from .ad_composer import AdComposer
+
 
 class AdGenerator:
     def __init__(self, job_id, product, audience, goal):
@@ -25,48 +28,9 @@ class AdGenerator:
         self.image_locations = []
 
         os.makedirs(os.path.join('jobs',self.id), exist_ok=True)
-        self.logger = self.create_logger()
-        self.handler = self.create_handler()
+        self.logger = create_logger(job_id)
+        self.handler = create_handler(job_id)
         self.logger.info(f"Job created! ID : {self.id}")
-
-
-    def create_logger(self) -> logging.Logger:
-        try:
-            job_logger = logging.getLogger(self.id)
-            job_logger.setLevel(logging.DEBUG)
-            job_logger.addHandler(queue_handler)
-
-        except Exception as e:
-            raise
-
-        return job_logger
-
-
-    def create_handler(self) -> logging.Handler:
-        try:
-            file_handler = logging.FileHandler(filename=os.path.join('jobs', self.id, 'job_log.txt'))
-            file_handler.setFormatter(logging.Formatter('%(asctime)s | %(levelname)s | %(message)s'))
-            file_handler.addFilter(logging.Filter(name=self.id))
-
-            # Add to listener's handlers
-            handlers = list(listener.handlers)
-            handlers.append(file_handler)
-            listener.handlers = tuple(handlers)
-
-        except Exception as e:
-            raise
-
-        return file_handler
-
-    def remove_queue_handler(self) -> None:
-        try:
-            handlers = list(listener.handlers)
-            handlers.remove(self.handler)
-            listener.handlers = tuple(handlers)
-            self.handler.close()
-
-        except Exception as e:
-            print(f"ERROR REMOVING QUEUE HANDLER: {e}")
 
 
     async def sim_run(self):
@@ -101,8 +65,8 @@ class AdGenerator:
 
     async def generate_ad(self, i, concept):
         await self.generate_ad_text(concept)
-        await self.generate_image(i, concept)
-        self.add_text_to_image(i, concept)
+        img_filepath = await self.generate_image(i, concept)
+        AdComposer(img_filepath, concept['copy']).compose_advertisement()
 
 
     async def generate_ad_concepts(self):
@@ -163,7 +127,7 @@ class AdGenerator:
             )
 
         except openai.BadRequestError as e:
-            print(f"GUARD RAILS STRUCK: {self.id} : Concept {concept_num}: {e}")
+            print(f"GUARD RAILS STRUCK: {self.id} : Concept {concept_num}: {prompt}")
             await asyncio.sleep(1)
             raise
 
@@ -172,8 +136,11 @@ class AdGenerator:
         # Download image from OpenAI
         img_data = requests.get(response.data[0].url).content
 
-        with open(f'jobs/{self.id}/concept_{concept_num}.png', 'wb') as handler:  # TODO: Implement different file names for more than 1 image
+        filepath = os.path.join('jobs',self.id,f'concept_{concept_num}.png')
+        with open(filepath, 'wb') as handler:
             handler.write(img_data)
+
+        return filepath
 
 
     async def generate_ad_text(self, ad_concept):
@@ -200,45 +167,11 @@ class AdGenerator:
         ad_copy = {'headline': response_text[response_text.find('<headline>')+10 : response_text.rfind('</headline>')],
                    'body_text': response_text[response_text.find('<body_text>')+11 : response_text.rfind('</body_text>')],
                    'call_to_action': response_text[response_text.find('<call_to_action>')+16 : response_text.rfind('</call_to_action>')]}
-        #print(ad_copy['headline'])
-        #print(ad_copy['body_text'])
-        #print(ad_copy['call_to_action'])
+        print(f"Headline: {ad_copy['headline']}")
+        print(f"Body: {ad_copy['body_text']}")
+        print(f"CTA: {ad_copy['call_to_action']}")
 
         ad_concept['copy'] = ad_copy
-
-
-    def add_text_to_image(self, concept_num, ad_concept):
-        self.logger.info("Adding Text to Image...")
-
-        img = Image.open(f"./jobs/{self.id}/concept_{concept_num}.png")  # Load the image file
-
-        # Create an ImageDraw object
-        draw = ImageDraw.Draw(img)
-
-        # Define the text and its properties
-        text = ad_concept['copy']['headline']
-        font = ImageFont.truetype("arial.ttf", size=30)
-
-        # Calculate text bounding box (left, top, right, bottom)
-        bbox = draw.textbbox((0, 0), text, font=font)
-        text_width = bbox[2] - bbox[0]
-
-        # Center the text
-        x = (img.width - text_width) / 2
-        y = 50
-
-        # Define shadow offset
-        shadow_offset = 2
-
-        # Draw the drop shadow (black text, slightly offset)
-        draw.text((x + shadow_offset, y + shadow_offset), text, font=font, fill="black")
-
-        # Draw the main text (white text, centered)
-        draw.text((x, y), text, font=font, fill="white")
-
-        # Save the edited image
-        img.save(f"./jobs/{self.id}/concept_{concept_num}.png")
-        self.logger.info(f"Added Text to Image.")
 
 
     async def move_files_to_static(self):
@@ -246,7 +179,7 @@ class AdGenerator:
         await asyncio.sleep(1)  # Allow logs in queue to be logged before closing.
         self.logger.removeHandler(self.handler)
         del self.logger
-        self.remove_queue_handler()    # Close the file handler so the log can be moved.
+        remove_queue_handler(self.handler)    # Close the file handler so the log can be moved.
         del self.handler
 
 
