@@ -99,7 +99,7 @@ def logout():
 
 
 # ----------------- API KEY MANAGEMENT -----------------
-@app.route('/regenerate_api_key')
+@app.route('/regenerate_api_key', methods=['POST'])
 def regenerate_api_key():
     # You must be logged in to regenerate your API key.
     if 'user' not in session:
