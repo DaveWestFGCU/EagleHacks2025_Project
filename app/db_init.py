@@ -16,12 +16,11 @@ def main():
     with db.connect() as conn, conn.cursor() as cursor:
         cursor.execute("""
             create table if not exists users (
-                primary key (user_id),
-                unique (username),
-                user_id bigserial not null,
-                username varchar(256) not null check (username <> ''),
+                user_id bigserial primary key,
+                username varchar(256) not null unique check (username <> ''),
                 pw_hash bytea not null,
-                salt bytea not null
+                salt bytea not null,
+                api_key text not null unique
             );
         """)
 

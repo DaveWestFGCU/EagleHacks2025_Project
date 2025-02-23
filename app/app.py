@@ -67,15 +67,16 @@ def register():
 
     salt = auth.generate_salt()
     pw_hash = auth.hash_pw(pw=password, salt=salt)
+    api_key = auth.generate_api_key()
 
     try:
         with db.connect() as conn, conn.cursor() as cursor:
             cursor.execute(
                 """
-                insert into users (username, pw_hash, salt)
-                values (%s, %s, %s);
+                insert into users (username, pw_hash, salt, api_key)
+                values (%s, %s, %s, %s);
                 """,
-                (username, pw_hash, salt),
+                (username, pw_hash, salt, api_key),
             )
     except UniqueViolation:
         return render_template('login.html', error='Username taken')
