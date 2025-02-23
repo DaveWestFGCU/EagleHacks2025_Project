@@ -5,8 +5,8 @@ from contextlib import asynccontextmanager
 from starlette.responses import JSONResponse
 from starlette.staticfiles import StaticFiles
 
-from .ad_generator import AdGenerator
-from .logging_setup import listener
+from api.services.ad_generator import AdGenerator
+from api.services.logging_setup import listener
 
 
 @asynccontextmanager
