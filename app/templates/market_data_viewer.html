@@ -23,24 +23,31 @@
         document.addEventListener("DOMContentLoaded", function () {
             function processChartData(data) {
                 console.log("Parsed Data:", data); // Debugging
-
-                let categories = [];  // Should use "Channel"
-                let values = [];  // Should use a valid numerical column (e.g., "Impressions")
-
+                
+                let dates = [];          // Separate the dates  
+                let products = [];       // Separate the ad pitches
+                let categories = [];    // Should use "Channel"
+                let counts = [];         // Should use a valid numerical column (e.g., "Impressions")
+                let impressions = [];    
+                let clicks = [];
+                let conversions = [];
+                let ctrs = []
+                let costs = [];
+                
                 data.forEach(row => {
                     let category = row["Channel"] || "Unknown";  // Use "Channel" instead of "Category"
                     let value = parseFloat(row["Impressions"]  || row["Clicks"] || 0);  // Use a valid numeric field
 
                     if (!categories.includes(category)) {
                         categories.push(category);
-                        values.push(value);
+                        counts.push(value);
                     } else {
                         let index = categories.indexOf(category);
-                        values[index] += value; // Aggregate values for the same category
+                        counts[index] += value; // Aggregate values for the same category
                     }
                 });
 
-                renderChart(categories, values);
+                renderChart(categories, counts);
             }
 
 
