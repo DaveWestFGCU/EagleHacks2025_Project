@@ -45,7 +45,7 @@ def draw_custom_bold_text(draw, position, text, font, fill, offsets):
         draw.text((x+dx, y+dy), text, font=font, fill=fill)
 
 
-class ImageComposer:
+class AdComposer:
     def __init__(self, image_filepath, ad_copy):
         self.image_filepath = image_filepath
         self.headline_text = ad_copy['headline']
