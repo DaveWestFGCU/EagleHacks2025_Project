@@ -1,17 +1,9 @@
 # EagleHacks 2025 Team
     
-## Daniel Kareh  
-User authentication and database creation.  
-
-## William Murphy  
-Data analytics and frontend development.  
-
-## William Ward  
-Frontend, backend, server development, and API communications.  
-
-## David West  
-FastAPI development, ad generation, and prompt engineering.  
-
+- **Daniel Kareh**: User authentication and database creation.
+- **William Murphy**: Data analytics and frontend development.
+- **William Ward**: Frontend, backend, server development, and API communications.
+- **David West**: FastAPI development, ad generation, and prompt engineering.
 
 # AD Some AI 
 
