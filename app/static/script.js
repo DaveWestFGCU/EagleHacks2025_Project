@@ -77,7 +77,7 @@ document.getElementById('adForm').addEventListener('submit', async function(even
       submitButton.disabled = false;
       submitButton.innerHTML = 'Submit';
   } else {
-\      checkStatus(result.job_id, submitButton);
+      checkStatus(result.job_id, submitButton);
   }
 });
 
