@@ -1,5 +1,5 @@
 prompt_text = \
-"""Generate a headline, body text, and call to action for <keyword>. Each area must include \'<keyword>\' in its text.
+"""Generate a short, attention grabbing headline, a few sentences of body text, and a punchy call to action for <keyword>. Each area must include \'<keyword>\' in its text.
 The title for this ad campaign is <title>.
 The concept for this ad campaign is <description>.
 The main takeaway that we want to impart is <key_message>.
