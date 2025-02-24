@@ -67,3 +67,18 @@ By doing this, we are able to generate ads using AI that include titles, descrip
 7. **Download or Use**  
    Once the ads are ready, you can download or directly use them for your campaigns.
 
+
+# Example Images
+
+The following images were generated using the keyword "coffee", with an intended audience of women aged 18-35 and a goal of awareness of health benefits.
+
+## Orange Campaign - Highlighting Warmth, Energy, and Creativity
+<p align="center"><img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/coffee_ad_creative.png" alt="A coffee ad targeting young women about its health benefits, highlighting creativity."></p>
+
+## Green Campaign - Highlighting Nature, Growth, and Health
+<p align="center"><img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/coffee_ad_nature.png" alt="A coffee ad targeting young women about its health benefits, highlighting nature."></p>
+
+## Black Campaign - Highlighting Sophistication, Power, & Mystery
+<p align="center"><img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/coffee_ad_elegance.png" alt="A coffee ad targeting young women about its health benefits, highlighting elegance."></p>
+
+
