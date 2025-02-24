@@ -78,18 +78,20 @@ def register():
 
     try:
         with db.connect() as conn, conn.cursor() as cursor:
-            cursor.execute(
+            user_id = cursor.execute(
                 """
                 insert into users (username, pw_hash, salt, api_key)
-                values (%s, %s, %s, %s);
+                values (%s, %s, %s, %s)
+                returning user_id;
                 """,
                 (username, pw_hash, salt, api_key),
-            )
+            ).fetchone()
     except UniqueViolation:
         # We're relying on the `username` column's `unique` constraint.
         return render_template('login.html', error='Username taken')
     else:
-        return render_template('login.html')
+        session['user'] = user_id
+        return redirect(url_for('dashboard'))
 
 
 @app.route('/logout')
