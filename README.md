@@ -1,4 +1,4 @@
-<p align="center"><img src="github_assets/eaglehacks_2025_logo_cropped_resized.png" alt="EagleHacks 2025 Logo"></p>
+<p align="center"><img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/eaglehacks_2nd_place.png"></p>
 
 # <p align="center"> AD Some AI </p>
 <div align="center"><img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/coffee_ad_creative.png" style="width: 19%; height: auto;"> <img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/bmw_mystery.png" style="width: 19%; height: auto;"> <img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/arthroplasty_simplicity.png" style="width: 19%; height: auto;"> <img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/coffee_ad_mindful.png" style="width: 19%; height: auto;"> <img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/high_cholersterol_danger.png" style="width: 19%; height: auto;"></div>
