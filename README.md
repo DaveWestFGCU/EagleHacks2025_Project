@@ -82,7 +82,7 @@ Our API takes as little as a single keyword and turns it into 3 ad campaigns wit
    
    We start by receiving a request at the POST /new_job endpoint. The request requires a valid API key in the header, which is checked by middleware for all endpoints, as well as a form body with a product/service (aka keyword) for the ads. Optionally, the user can also provide an intended audience and a marketing goal.
 
-   Additionally, an GET /job/{job_id} endpoint can be polled to get the current status of a given job.
+   Additionally, a GET /job/{job_id} endpoint can be polled to get the current status of a given job.
 
 2. **Creating a Campaign "Mood"**
    
@@ -108,7 +108,7 @@ Our API takes as little as a single keyword and turns it into 3 ad campaigns wit
 
 7. **The Response**
     
-    We now change the job's status to reflect that it is completed, move the job's directory into a mounted directory for hosting, and on the next query at the GET /job/{job_id}, respond with the new status and links to the ad PNG images.
+    We now change the job's status to reflect that it is completed, move the job's directory into a mounted directory for hosting, and on the next query at GET /job/{job_id} the response includes links to the generated advertisements.
 
 
 ## Example Images
