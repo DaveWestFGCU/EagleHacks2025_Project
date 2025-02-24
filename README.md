@@ -10,10 +10,10 @@
 
 ## Team 'git push --force'
     
-- **Daniel Kareh**: User authentication and database creation.
-- **William Murphy**: Data analytics and frontend development.
-- **William Ward**: Frontend, backend, server development, and API communications.
-- **David West**: API development, ad generation, and prompt engineering.
+- **Daniel Kareh** ([GitHub](https://github.com/dkareh) | [LinkedIn](https://www.linkedin.com/in/dkareh/)): User authentication and database creation.
+- **William Murphy** ([GitHub](https://github.com/William-M3) | [LinkedIn](https://www.linkedin.com/in/william-murphy-721b552b1/)): Data analytics and frontend development.
+- **William Ward** ([GitHub](https://github.com/wcward3302) | [LinkedIn](https://www.linkedin.com/in/william-ward-347b161a3/)): Frontend, backend, server development, and API communications.
+- **David West** ([GitHub](https://github.com/DaveWestFGCU) | [LinkedIn](https://www.linkedin.com/in/david-west-5aa930237/)): API development, ad generation, and prompt engineering.
 
 
 ## Project Inspiration
