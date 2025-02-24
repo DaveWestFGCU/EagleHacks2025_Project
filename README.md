@@ -1,4 +1,4 @@
-<p align="center"><img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/eaglehacks_2nd_place_big.png"></p>
+<p align="center"><picture><img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/eaglehacks_2nd_place_big.png"></picture></p>
 
 # <p align="center"> AD Some AI </p>
 <div align="center"><img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/coffee_ad_creative.png" style="width: 19%; height: auto;"> <img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/bmw_mystery.png" style="width: 19%; height: auto;"> <img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/arthroplasty_simplicity.png" style="width: 19%; height: auto;"> <img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/coffee_ad_mindful.png" style="width: 19%; height: auto;"> <img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/high_cholersterol_danger.png" style="width: 19%; height: auto;"></div>
@@ -111,17 +111,20 @@ Our API takes as little as a single keyword and turns it into 3 ad campaigns wit
     We now change the job's status to reflect that it is completed, move the job's directory into a mounted directory for hosting, and on the next query at GET /job/{job_id} the response includes links to the generated advertisements.
 
 
-## Example Images
+## Example Ads
 
-The following images were generated from the same job, using the keyword "coffee" with an intended audience of "women age 18-35" and a goal of "awareness of health benefits".
+The following images were generated from the same job.
+- Product/Service: coffee
+- Audience: women age 18-35
+- Goal: awareness of health benefits
 
 ### Orange Campaign - Highlighting Warmth, Energy, and Creativity
-<p align="center"><img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/coffee_ad_creative.png" alt="A coffee ad targeting young women about its health benefits, highlighting creativity."></p>
+<p align="center"><picture><img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/coffee_ad_creative.png" alt="A coffee ad targeting young women about its health benefits, highlighting creativity."></picture></p>
 
 ### Green Campaign - Highlighting Nature, Growth, and Health
-<p align="center"><img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/coffee_ad_nature.png" alt="A coffee ad targeting young women about its health benefits, highlighting nature."></p>
+<p align="center"><picture><img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/coffee_ad_nature.png" alt="A coffee ad targeting young women about its health benefits, highlighting nature."></picture></p>
 
 ### Black Campaign - Highlighting Sophistication, Power, & Mystery
-<p align="center"><img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/coffee_ad_elegance.png" alt="A coffee ad targeting young women about its health benefits, highlighting elegance."></p>
+<p align="center"><picture><img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/coffee_ad_elegance.png" alt="A coffee ad targeting young women about its health benefits, highlighting elegance."></picture></p>
 
 
