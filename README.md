@@ -13,7 +13,7 @@
 - **Daniel Kareh**: User authentication and database creation.
 - **William Murphy**: Data analytics and frontend development.
 - **William Ward**: Frontend, backend, server development, and API communications.
-- **David West**: FastAPI development, ad generation, and prompt engineering.
+- **David West**: API development, ad generation, and prompt engineering.
 
 
 ## Project Inspiration
