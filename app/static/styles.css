@@ -158,10 +158,10 @@ button:hover {
 /* Login Error */
 .error-box {
     align-items: center;
-    background: linear-gradient(#e16060, #e04444);
+    background: #e16060;
     border-radius: 0.25rem;
-    border: 0.125em solid #ec3c3c;
-    box-shadow: 0 0.125rem 0.5rem #ff3232b2;
+    border: 0.125em solid #d34040;
+    box-shadow: 0 0.125rem 0.5rem #ff323272;
     display: flex;
     justify-content: space-between;
     margin-bottom: 1.25rem;
