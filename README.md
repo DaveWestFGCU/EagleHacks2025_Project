@@ -1,3 +1,5 @@
+<p align="center"><img src="github_assets/eaglehacks_2025_logo_cropped_resized.png" alt="EagleHacks 2025 Logo"></p>
+
 # EagleHacks 2025 Team
     
 - **Daniel Kareh**: User authentication and database creation.
