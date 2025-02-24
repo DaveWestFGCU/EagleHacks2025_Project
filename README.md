@@ -113,7 +113,7 @@ Our API takes as little as a single keyword and turns it into 3 ad campaigns wit
 
 ## Example Images
 
-The following images were generated using the keyword "coffee", with an intended audience of women aged 18-35 and a goal of awareness of health benefits.
+The following images were generated from the same job, using the keyword "coffee" with an intended audience of "women age 18-35" and a goal of "awareness of health benefits".
 
 ### Orange Campaign - Highlighting Warmth, Energy, and Creativity
 <p align="center"><img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/coffee_ad_creative.png" alt="A coffee ad targeting young women about its health benefits, highlighting creativity."></p>
