@@ -38,6 +38,30 @@ body {
     text-align: center;
 }
 
+/* Login Error */
+.error-box {
+    align-items: center;
+    background: #e16060;
+    border-radius: 0.25rem;
+    border: 0.125em solid #d34040;
+    box-shadow: 0 0.125rem 0.5rem #ff323272;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    padding: 0.625em;
+}
+
+.error-message {
+    color: #fff;
+    height: min-content;
+}
+
+.error-close {
+    color: #fff;
+    font-size: 1.5em;
+    height: min-content;
+    user-select: none;
+}
 
 /* Navbar */
 .navbar {
@@ -153,31 +177,6 @@ button {
 
 button:hover {
     background: #0056b3;
-}
-
-/* Login Error */
-.error-box {
-    align-items: center;
-    background: #e16060;
-    border-radius: 0.25rem;
-    border: 0.125em solid #d34040;
-    box-shadow: 0 0.125rem 0.5rem #ff323272;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1.25rem;
-    padding: 0.625em;
-}
-
-.error-message {
-    color: #fff;
-    height: min-content;
-}
-
-.error-close {
-    color: #fff;
-    font-size: 1.5em;
-    height: min-content;
-    user-select: none;
 }
 
 /* 404 Page */
