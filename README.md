@@ -118,13 +118,13 @@ The following images were generated from the same job.
 - Audience: women age 18-35
 - Goal: awareness of health benefits
 
-### Orange Campaign - Highlighting Warmth, Energy, and Creativity
+### Orange Campaign - Emphasizing Warmth, Energy, and Creativity
 <p align="center"><picture><img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/coffee_ad_creativity.png" alt="A coffee ad targeting young women about its health benefits, highlighting creativity."></picture></p>
 
-### Green Campaign - Highlighting Nature, Growth, and Health
+### Green Campaign - Emphasizing Nature, Growth, and Health
 <p align="center"><picture><img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/coffee_ad_nature.png" alt="A coffee ad targeting young women about its health benefits, highlighting nature."></picture></p>
 
-### Black Campaign - Highlighting Sophistication, Power, & Mystery
+### Black Campaign - Emphasizing Sophistication, Power, & Mystery
 <p align="center"><picture><img src="https://github.com/DaveWestFGCU/EagleHacks2025_Project/blob/main/github_assets/coffee_ad_elegance.png" alt="A coffee ad targeting young women about its health benefits, highlighting elegance."></picture></p>
 
 
