@@ -16,3 +16,9 @@
   align-items: center;
   gap: 0.25rem;
 }
+
+.feature-icon {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 0.75rem;
+      }
