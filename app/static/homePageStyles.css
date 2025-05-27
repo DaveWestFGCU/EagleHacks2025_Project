@@ -1,0 +1,18 @@
+.feature {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* make the feature take full height of the column */
+}
+
+.feature p {
+  flex-grow: 1; /* allow paragraph to take available space */
+}
+
+.icon-link {
+  margin-top: auto; /* push the call-to-action link to the bottom */
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
